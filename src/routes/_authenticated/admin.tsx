@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-export type Tab = "items" | "categories" | "store" | "orders" | "clients";
+export type Tab = "items" | "categories" | "store" | "orders" | "clients" | "accounts";
 
 const BRL = (n: number) => Number(n).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
