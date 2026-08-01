@@ -173,7 +173,12 @@ function NewAccountButton() {
   const mut = useMutation({
     mutationFn: () => createAccount({ data: { email, password, role } }),
     onSuccess: (res) => {
-      toast.success(`Conta criada: ${res.email}`);
+      toast.success(
+        res.updated
+          ? `Conta já existia — senha e perfil atualizados: ${res.email}`
+          : `Conta criada: ${res.email}`,
+      );
+
       setEmail("");
       setPassword("");
       setOpen(false);
