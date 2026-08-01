@@ -1681,14 +1681,14 @@ function ClientsTab({ isMaster = false }: { isMaster?: boolean }) {
         prev.totalSpent += Number(o.total);
         if (new Date(o.created_at) > new Date(prev.lastOrderAt)) {
           prev.lastOrderAt = o.created_at;
-          prev.address = o.customer_address;
+          prev.address = o.customer_address ?? "";
           prev.name = o.customer_name;
         }
       } else {
         map.set(key, {
           name: o.customer_name,
           phone: o.customer_phone,
-          address: o.customer_address,
+          address: o.customer_address ?? "",
           orderCount: 1,
           totalSpent: Number(o.total),
           lastOrderAt: o.created_at,

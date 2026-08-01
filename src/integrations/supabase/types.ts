@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.15"
   }
   public: {
     Tables: {
@@ -21,7 +21,6 @@ export type Database = {
           id: string
           name: string
           position: number
-          updated_at: string
         }
         Insert: {
           active?: boolean
@@ -29,7 +28,6 @@ export type Database = {
           id?: string
           name: string
           position?: number
-          updated_at?: string
         }
         Update: {
           active?: boolean
@@ -37,7 +35,6 @@ export type Database = {
           id?: string
           name?: string
           position?: number
-          updated_at?: string
         }
         Relationships: []
       }
@@ -50,7 +47,6 @@ export type Database = {
           name: string
           position: number
           price: number
-          updated_at: string
         }
         Insert: {
           active?: boolean
@@ -60,7 +56,6 @@ export type Database = {
           name: string
           position?: number
           price?: number
-          updated_at?: string
         }
         Update: {
           active?: boolean
@@ -70,7 +65,6 @@ export type Database = {
           name?: string
           position?: number
           price?: number
-          updated_at?: string
         }
         Relationships: [
           {
@@ -109,7 +103,7 @@ export type Database = {
           name: string
           old_price?: number | null
           position?: number
-          price: number
+          price?: number
           tag?: string | null
           updated_at?: string
         }
@@ -144,21 +138,18 @@ export type Database = {
           fee: number
           id: string
           name: string
-          updated_at: string
         }
         Insert: {
           created_at?: string
           fee?: number
           id?: string
           name: string
-          updated_at?: string
         }
         Update: {
           created_at?: string
           fee?: number
           id?: string
           name?: string
-          updated_at?: string
         }
         Relationships: []
       }
@@ -178,12 +169,12 @@ export type Database = {
           addons?: Json
           created_at?: string
           id?: string
-          line_total: number
+          line_total?: number
           menu_item_id?: string | null
           name: string
           order_id: string
-          quantity: number
-          unit_price: number
+          quantity?: number
+          unit_price?: number
         }
         Update: {
           addons?: Json
@@ -217,13 +208,12 @@ export type Database = {
         Row: {
           client_token: string
           created_at: string
-          customer_address: string
+          customer_address: string | null
           customer_name: string
           customer_phone: string
           delivery_fee: number
           id: string
           notes: string | null
-          order_number: number
           payment_method: string | null
           payment_proof_url: string | null
           status: Database["public"]["Enums"]["order_status"]
@@ -234,30 +224,28 @@ export type Database = {
         Insert: {
           client_token?: string
           created_at?: string
-          customer_address: string
+          customer_address?: string | null
           customer_name: string
           customer_phone: string
           delivery_fee?: number
           id?: string
           notes?: string | null
-          order_number?: number
           payment_method?: string | null
           payment_proof_url?: string | null
           status?: Database["public"]["Enums"]["order_status"]
-          subtotal: number
-          total: number
+          subtotal?: number
+          total?: number
           updated_at?: string
         }
         Update: {
           client_token?: string
           created_at?: string
-          customer_address?: string
+          customer_address?: string | null
           customer_name?: string
           customer_phone?: string
           delivery_fee?: number
           id?: string
           notes?: string | null
-          order_number?: number
           payment_method?: string | null
           payment_proof_url?: string | null
           status?: Database["public"]["Enums"]["order_status"]
@@ -271,6 +259,7 @@ export type Database = {
         Row: {
           address: string | null
           banner_url: string | null
+          created_at: string
           delivery_fee: number
           hours: string | null
           id: string
@@ -288,6 +277,7 @@ export type Database = {
         Insert: {
           address?: string | null
           banner_url?: string | null
+          created_at?: string
           delivery_fee?: number
           hours?: string | null
           id?: string
@@ -305,6 +295,7 @@ export type Database = {
         Update: {
           address?: string | null
           banner_url?: string | null
+          created_at?: string
           delivery_fee?: number
           hours?: string | null
           id?: string
@@ -331,7 +322,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          role?: Database["public"]["Enums"]["app_role"]
+          role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Update: {
@@ -354,10 +345,10 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_recent_pending_order: { Args: { _order_id: string }; Returns: boolean }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      app_role: "admin" | "user" | "lanchonete"
+      app_role: "admin" | "lanchonete" | "user"
       order_status:
         | "pending"
         | "confirmed"
@@ -492,7 +483,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user", "lanchonete"],
+      app_role: ["admin", "lanchonete", "user"],
       order_status: [
         "pending",
         "confirmed",
