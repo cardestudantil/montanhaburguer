@@ -114,7 +114,9 @@ export function AdminPage() {
           </nav>
           <div className="ml-auto flex items-center gap-3">
             <StoreOpenToggle />
+            <NewAccountButton />
             <span className="hidden text-xs text-muted-foreground md:inline">{user?.email}</span>
+
             <button
               onClick={async () => {
                 await supabase.auth.signOut();
