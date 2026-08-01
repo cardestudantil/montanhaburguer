@@ -140,6 +140,7 @@ export function AdminPage() {
               ["store", "Loja"],
               ["orders", "Pedidos"],
               ["clients", "Clientes"],
+              ["accounts", "Contas"],
             ] as [Tab, string][]
           ).map(([k, l]) => (
             <button
