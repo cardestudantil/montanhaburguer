@@ -1,0 +1,1 @@
+ALTER TABLE public.store_info ADD COLUMN IF NOT EXISTS theme_color text;

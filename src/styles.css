@@ -4,23 +4,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * Design system: warm minimal editorial.
- *
- * A soft, human productivity aesthetic. Cream backgrounds, near-black ink,
- * warm terracotta primary, sage accent. Generous whitespace, serif headings,
- * clean sans-serif body.
- */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
-
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -40,100 +29,86 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-ring-offset-background: var(--background);
-
-  --font-heading: "DM Serif Display", serif;
-  --font-body: "Fira Sans", system-ui, sans-serif;
+  --color-flame: var(--flame);
+  --color-mustard: var(--mustard);
+  --color-success: var(--success);
+  --font-display: "Bebas Neue", "Impact", sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --shadow-card: 0 10px 30px -10px oklch(0 0 0 / 0.4);
+  --shadow-glow: 0 0 40px -10px var(--flame);
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.875rem;
 
-  --background: oklch(0.98 0.005 80);
-  --foreground: oklch(0.14 0.02 280);
+  /* Warm charcoal canvas */
+  --background: oklch(0.16 0.012 50);
+  --foreground: oklch(0.97 0.01 80);
 
-  --card: oklch(0.995 0.004 80);
-  --card-foreground: oklch(0.14 0.02 280);
+  --card: oklch(0.21 0.014 55);
+  --card-foreground: oklch(0.97 0.01 80);
 
-  --popover: oklch(0.995 0.004 80);
-  --popover-foreground: oklch(0.14 0.02 280);
+  --popover: oklch(0.21 0.014 55);
+  --popover-foreground: oklch(0.97 0.01 80);
 
-  --primary: oklch(0.45 0.12 25);
-  --primary-foreground: oklch(0.985 0.003 80);
+  /* Flame red — the brand */
+  --primary: oklch(0.62 0.21 28);
+  --primary-foreground: oklch(0.99 0 0);
+  --flame: oklch(0.66 0.22 35);
+  --mustard: oklch(0.82 0.17 80);
 
-  --secondary: oklch(0.94 0.01 80);
-  --secondary-foreground: oklch(0.2 0.02 280);
+  --secondary: oklch(0.26 0.015 55);
+  --secondary-foreground: oklch(0.97 0.01 80);
 
-  --muted: oklch(0.92 0.01 80);
-  --muted-foreground: oklch(0.5 0.03 280);
+  --muted: oklch(0.24 0.012 55);
+  --muted-foreground: oklch(0.7 0.02 70);
 
-  --accent: oklch(0.78 0.07 140);
-  --accent-foreground: oklch(0.14 0.02 280);
+  --accent: oklch(0.3 0.04 40);
+  --accent-foreground: oklch(0.97 0.01 80);
 
-  --destructive: oklch(0.55 0.2 25);
-  --destructive-foreground: oklch(0.985 0.003 80);
+  --destructive: oklch(0.6 0.24 27);
+  --destructive-foreground: oklch(0.99 0 0);
+  --success: oklch(0.7 0.17 145);
 
-  --border: oklch(0.86 0.01 80);
-  --input: oklch(0.86 0.01 80);
-  --ring: oklch(0.45 0.12 25);
-}
-
-.dark {
-  --background: oklch(0.16 0.02 280);
-  --foreground: oklch(0.96 0.005 80);
-
-  --card: oklch(0.2 0.02 280);
-  --card-foreground: oklch(0.96 0.005 80);
-
-  --popover: oklch(0.2 0.02 280);
-  --popover-foreground: oklch(0.96 0.005 80);
-
-  --primary: oklch(0.65 0.12 25);
-  --primary-foreground: oklch(0.14 0.02 280);
-
-  --secondary: oklch(0.24 0.02 280);
-  --secondary-foreground: oklch(0.96 0.005 80);
-
-  --muted: oklch(0.24 0.02 280);
-  --muted-foreground: oklch(0.7 0.02 280);
-
-  --accent: oklch(0.6 0.07 140);
-  --accent-foreground: oklch(0.14 0.02 280);
-
-  --destructive: oklch(0.65 0.18 25);
-  --destructive-foreground: oklch(0.985 0.003 80);
-
-  --border: oklch(0.3 0.02 280);
-  --input: oklch(0.3 0.02 280);
-  --ring: oklch(0.65 0.12 25);
+  --border: oklch(0.28 0.014 55);
+  --input: oklch(0.26 0.014 55);
+  --ring: oklch(0.66 0.22 35);
 }
 
 @layer base {
   * {
     border-color: var(--color-border);
   }
-
-  html {
-    scroll-behavior: smooth;
-  }
-
+  html,
   body {
+    min-height: 100vh;
+    min-height: 100dvh;
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-body);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
-
+  body {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  input,
+  textarea,
+  select,
+  [contenteditable="true"],
+  [contenteditable=""] {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+  }
   h1,
   h2,
   h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-heading);
-    font-weight: 400;
-    letter-spacing: -0.02em;
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.01em;
   }
 }
 
@@ -141,44 +116,99 @@
   .text-balance {
     text-wrap: balance;
   }
-
-  .animate-fade-in {
-    animation: fade-in 0.8s ease-out both;
+  .no-text-selection,
+  .no-text-selection * {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
   }
-
-  .animate-fade-in-up {
-    animation: fade-in-up 0.8s ease-out both;
+  .grain {
+    background-image: radial-gradient(oklch(1 0 0 / 0.03) 1px, transparent 1px);
+    background-size: 3px 3px;
   }
-
-  .animate-delay-100 {
-    animation-delay: 100ms;
-  }
-
-  .animate-delay-200 {
-    animation-delay: 200ms;
-  }
-
-  .animate-delay-300 {
-    animation-delay: 300ms;
+  .bg-radial-flame {
+    background: radial-gradient(ellipse at top, oklch(0.66 0.22 35 / 0.25), transparent 60%);
   }
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
+@keyframes initial-loader-spin {
   to {
-    opacity: 1;
+    transform: rotate(360deg);
   }
 }
 
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(1rem);
+#lovable-badge {
+  display: none !important;
+}
+
+/* ============================ PRINT (thermal 58mm) ============================ */
+.print-root { display: none; }
+
+@media print {
+  @page { size: 58mm auto; margin: 0; }
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    width: 58mm !important;
+    box-sizing: border-box;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  /* Hide every top-level app container; only the print root remains */
+  body > *:not(.print-root) { display: none !important; }
+  .print-root, .print-root * { visibility: visible !important; }
+  .print-root {
+    display: block !important;
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 58mm;
+    height: auto !important;
+    font-family: "Courier New", ui-monospace, monospace;
+    color: #000;
+    font-size: 10pt;
+    line-height: 1.2;
+    box-sizing: border-box;
   }
+  .print-ticket {
+    width: 100%;
+    padding: 2mm;
+    margin: 0;
+    box-sizing: border-box;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    page-break-after: auto;
+    break-after: auto;
+  }
+  /* Only Via 1 (Cozinha) forces a break before Via 2. Via 2 has no break after. */
+  .print-page-break {
+    page-break-before: always;
+    break-before: page;
+    page-break-after: auto;
+    break-after: auto;
+  }
+  .print-title { text-align: center; font-weight: 900; font-size: 11pt; margin: 0 0 3px; letter-spacing: 0.02em; }
+  .print-order-no { text-align: center; font-weight: 900; font-size: 16pt; margin: 2px 0; }
+  .print-meta { text-align: center; font-size: 9pt; margin-bottom: 3px; }
+  .print-hr { border: 0; border-top: 1px solid #000; margin: 5px 0; }
+  .print-hr-dash { border-top: 1px dashed #000; }
+  .print-label { font-size: 9pt; font-weight: 700; text-transform: uppercase; margin-top: 3px; }
+  .print-strong { font-weight: 800; font-size: 11pt; }
+  .print-address { font-weight: 900; font-size: 12pt; line-height: 1.2; margin-top: 2px; }
+  .print-items { list-style: none; margin: 0; padding: 0; }
+  .print-item { margin-bottom: 5px; }
+  .print-item-line { font-weight: 900; font-size: 13pt; text-transform: uppercase; }
+  .print-addons { list-style: none; margin: 2px 0 0 10px; padding: 0; font-size: 9pt; }
+  .print-items-simple { list-style: none; margin: 0; padding: 0; font-size: 10pt; }
+  .print-items-simple li { margin: 1px 0; }
+  .print-obs-label { font-weight: 900; font-size: 11pt; text-align: center; }
+  .print-obs { font-weight: 900; font-size: 11pt; text-transform: uppercase; border: 2px solid #000; padding: 3px; text-align: center; }
+  .print-row { display: flex; justify-content: space-between; font-size: 10pt; }
+  .print-payment { font-weight: 700; margin-top: 2px; }
+  .print-total { display: flex; justify-content: space-between; font-weight: 900; font-size: 14pt; }
+  .print-footer { text-align: center; font-size: 9pt; margin-top: 5px; }
+  /* Kill any trailing empty page from the last ticket */
+  .print-root > .print-ticket:last-child { page-break-after: avoid !important; break-after: avoid !important; }
 }

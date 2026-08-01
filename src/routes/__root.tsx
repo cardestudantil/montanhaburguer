@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { getStoreMeta } from "../lib/store-meta.functions";
+import { ThemeApplier } from "../components/ThemeApplier";
 
 function NotFoundComponent() {
   return (
@@ -73,40 +75,44 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
+  loader: async () => {
+    try {
+      return await getStoreMeta();
+    } catch {
+      return { name: null, tagline: null, logo_url: null };
+    }
+  },
+  head: ({ loaderData }) => {
+    const title = loaderData?.name ?? "Aplicativo Zona Norte";
+    const desc = loaderData?.tagline ?? "Entrega rápida em São José dos Campos.";
+    const image = loaderData?.logo_url ?? null;
+    const meta: Array<Record<string, string>> = [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Stillpoint" },
-      { name: "description", content: "Clarity for your busiest days." },
-      { name: "author", content: "Stillpoint" },
-      { property: "og:title", content: "Stillpoint" },
-      { property: "og:description", content: "Clarity for your busiest days." },
+      { title },
+      { name: "description", content: desc },
+      { property: "og:title", content: title },
+      { property: "og:description", content: desc },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@stillpoint" },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-      {
-        rel: "preconnect",
-        href: "https://fonts.googleapis.com",
-      },
-      {
-        rel: "preconnect",
-        href: "https://fonts.gstatic.com",
-        crossOrigin: "anonymous",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fira+Sans:wght@300;400;500;600&display=swap",
-      },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-    ],
-  }),
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: desc },
+    ];
+    if (image) {
+      meta.push({ property: "og:image", content: image });
+      meta.push({ name: "twitter:image", content: image });
+    }
+    return {
+      meta,
+      links: [
+        { rel: "stylesheet", href: appCss },
+        { rel: "icon", href: image ?? "/favicon.ico" },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+        { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" },
+      ],
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -115,11 +121,35 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>
       <body>
+        <div
+          id="initial-loader"
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "#f8fafc",
+            zIndex: 99999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "opacity 0.4s ease",
+          }}
+        >
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              border: "4px solid #e2e8f0",
+              borderTopColor: "#475569",
+              borderRadius: "50%",
+              animation: "initial-loader-spin 1s linear infinite",
+            }}
+          />
+        </div>
         {children}
         <Scripts />
       </body>
@@ -130,8 +160,17 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    const loader = document.getElementById("initial-loader");
+    if (loader) {
+      loader.style.opacity = "0";
+      setTimeout(() => loader.remove(), 400);
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeApplier />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>
