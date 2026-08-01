@@ -159,8 +159,8 @@ export function AdminPage() {
         {tab === "items" && <ItemsTab />}
         {tab === "categories" && <CategoriesTab />}
         {tab === "store" && <StoreTab />}
-        {tab === "orders" && <OrdersTab isMaster={user?.email === "admin@app.com"} />}
-        {tab === "clients" && <ClientsTab isMaster={user?.email === "admin@app.com"} />}
+        {tab === "orders" && <OrdersTab isMaster={user?.email === "admin@app.com" || user?.email === "valemaisshopping@yahoo.com.br"} />}
+        {tab === "clients" && <ClientsTab isMaster={user?.email === "admin@app.com" || user?.email === "valemaisshopping@yahoo.com.br"} />}
         {tab === "accounts" && <AccountsTab />}
       </main>
     </div>
