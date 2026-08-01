@@ -31,21 +31,22 @@ function LoginPage() {
     e.preventDefault();
     setBusy(true);
     try {
-      const valid = ACCOUNTS.find(
-        (a) => a.email === email.trim().toLowerCase() && a.password === password,
-      );
-      if (!valid) {
+      const typedEmail = email.trim().toLowerCase();
+      const valid = ACCOUNTS.find((a) => a.email === typedEmail && a.password === password);
+      if (valid) {
+        // Make sure both hardcoded admin accounts exist in the backend
+        await bootstrapHardcodedAdmins();
+      }
+      const { error } = await supabase.auth.signInWithPassword({
+        email: typedEmail,
+        password,
+      });
+      if (error) {
         toast.error("E-mail ou senha incorretos.");
         return;
       }
-      // Make sure both hardcoded admin accounts exist in the backend
-      await bootstrapHardcodedAdmins();
-      const { error } = await supabase.auth.signInWithPassword({
-        email: valid.email,
-        password: valid.password,
-      });
-      if (error) throw error;
       navigate({ to: "/painel-controle" });
+
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao entrar");
     } finally {
