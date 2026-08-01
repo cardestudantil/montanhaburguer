@@ -269,6 +269,88 @@ function NewAccountButton() {
   );
 }
 
+function AccountsTab() {
+  const listAccounts = useServerFn(listStaffAccounts);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["staff_accounts"],
+    queryFn: () => listAccounts({}),
+  });
+
+  const fmt = (v: string | null) =>
+    v ? new Date(v).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—";
+
+  const roleLabel = (r: string) =>
+    r === "admin" ? "Administrador" : r === "lanchonete" ? "Lanchonete" : r;
+
+  return (
+    <section>
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h2 className="font-display text-2xl tracking-wide">Contas criadas</h2>
+          <p className="text-xs text-muted-foreground">
+            Todas as contas que podem acessar o painel.
+          </p>
+        </div>
+        <NewAccountButton />
+      </div>
+
+      {isLoading && <p className="mt-6 text-sm text-muted-foreground">Carregando contas...</p>}
+      {error && (
+        <p className="mt-6 text-sm text-red-400">
+          {error instanceof Error ? error.message : "Não foi possível carregar as contas"}
+        </p>
+      )}
+
+      {data && (
+        <div className="mt-6 overflow-x-auto rounded-2xl border border-border">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-secondary/50 text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th className="px-4 py-3">E-mail</th>
+                <th className="px-4 py-3">Perfil</th>
+                <th className="px-4 py-3">Criada em</th>
+                <th className="px-4 py-3">Último acesso</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((a) => (
+                <tr key={a.id} className="border-t border-border">
+                  <td className="px-4 py-3 font-medium">{a.email || "—"}</td>
+                  <td className="px-4 py-3">
+                    {a.roles.length ? (
+                      <span className="flex flex-wrap gap-1">
+                        {a.roles.map((r) => (
+                          <span
+                            key={r}
+                            className="rounded-full bg-flame/15 px-2 py-0.5 text-xs text-flame"
+                          >
+                            {roleLabel(r)}
+                          </span>
+                        ))}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">Sem perfil</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">{fmt(a.createdAt)}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{fmt(a.lastSignInAt)}</td>
+                </tr>
+              ))}
+              {data.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">
+                    Nenhuma conta encontrada.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
 
 function FullPageMsg({ title, body, action }: { title: string; body?: string; action?: React.ReactNode }) {
   return (
