@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
+import { Lock } from "lucide-react";
+
 
 import { supabase } from "@/integrations/supabase/client";
 import { addonsQuery, categoriesQuery, menuItemsQuery, storeInfoQuery } from "@/lib/queries";
