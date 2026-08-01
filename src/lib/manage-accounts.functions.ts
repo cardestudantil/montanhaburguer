@@ -14,12 +14,16 @@ export const createStaffAccount = createServerFn({ method: "POST" })
     return { email, password, role } as NewAccount;
   })
   .handler(async ({ data, context }) => {
-    const { data: isAdmin, error: roleCheckErr } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (roleCheckErr) throw roleCheckErr;
-    if (!isAdmin) throw new Error("Apenas administradores podem criar contas");
+    const isMaster = context.user?.email === "admin@app.com" || context.user?.email === "valemaisshopping@yahoo.com.br";
+    
+    if (!isMaster) {
+      const { data: isAdmin, error: roleCheckErr } = await context.supabase.rpc("has_role", {
+        _user_id: context.userId,
+        _role: "admin",
+      });
+      if (roleCheckErr) throw roleCheckErr;
+      if (!isAdmin) throw new Error("Apenas administradores podem criar contas");
+    }
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -83,12 +87,16 @@ export type StaffAccount = {
 export const listStaffAccounts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<StaffAccount[]> => {
-    const { data: isAdmin, error: roleCheckErr } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (roleCheckErr) throw roleCheckErr;
-    if (!isAdmin) throw new Error("Apenas administradores podem ver as contas");
+    const isMaster = context.user?.email === "admin@app.com" || context.user?.email === "valemaisshopping@yahoo.com.br";
+    
+    if (!isMaster) {
+      const { data: isAdmin, error: roleCheckErr } = await context.supabase.rpc("has_role", {
+        _user_id: context.userId,
+        _role: "admin",
+      });
+      if (roleCheckErr) throw roleCheckErr;
+      if (!isAdmin) throw new Error("Apenas administradores podem ver as contas");
+    }
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -139,12 +147,16 @@ export const deleteStaffAccount = createServerFn({ method: "POST" })
     return id;
   })
   .handler(async ({ data: userId, context }) => {
-    const { data: isAdmin, error: roleCheckErr } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (roleCheckErr) throw roleCheckErr;
-    if (!isAdmin) throw new Error("Apenas administradores podem deletar contas");
+    const isMaster = context.user?.email === "admin@app.com" || context.user?.email === "valemaisshopping@yahoo.com.br";
+    
+    if (!isMaster) {
+      const { data: isAdmin, error: roleCheckErr } = await context.supabase.rpc("has_role", {
+        _user_id: context.userId,
+        _role: "admin",
+      });
+      if (roleCheckErr) throw roleCheckErr;
+      if (!isAdmin) throw new Error("Apenas administradores podem deletar contas");
+    }
 
     if (userId === context.userId) {
       throw new Error("Você não pode deletar sua própria conta.");
