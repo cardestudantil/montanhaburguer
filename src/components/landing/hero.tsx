@@ -45,7 +45,7 @@ export function Hero() {
                 width={1440}
                 height={912}
                 className="h-full w-full object-cover"
-                priority="true"
+                fetchPriority="high"
               />
             </div>
             <div className="absolute -bottom-6 -left-6 hidden h-32 w-32 rounded-full bg-accent/30 blur-2xl lg:block" />
