@@ -383,7 +383,7 @@ function FullPageMsg({ title, body, action }: { title: string; body?: string; ac
     <div className="grid min-h-screen place-items-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="font-display text-3xl tracking-wide">{title}</h1>
-        {body && <p className="mt-2 text-sm text-muted-foreground">{body === "nao funciona" ? "quero selecionar os itens que o dono vai ter acesso" : body}</p>}
+        {body && <p className="mt-2 text-sm text-muted-foreground">{body === "nao funciona" ? "esta conta valemaisshopping@yahoo.com.br tem que ser a master." : body}</p>}
         {action && <div className="mt-6">{action}</div>}
       </div>
     </div>
