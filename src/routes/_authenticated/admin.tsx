@@ -160,6 +160,102 @@ export function AdminPage() {
   );
 }
 
+function NewAccountButton() {
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState<"admin" | "lanchonete">("lanchonete");
+  const createAccount = useServerFn(createStaffAccount);
+
+  const mut = useMutation({
+    mutationFn: () => createAccount({ data: { email, password, role } }),
+    onSuccess: (res) => {
+      toast.success(`Conta criada: ${res.email}`);
+      setEmail("");
+      setPassword("");
+      setOpen(false);
+    },
+    onError: (e: unknown) =>
+      toast.error(e instanceof Error ? e.message : "Não foi possível criar a conta"),
+  });
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="rounded-lg border border-border px-3 py-2 text-sm font-medium hover:border-flame"
+      >
+        + Nova conta
+      </button>
+
+      {open && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-card">
+            <h2 className="font-display text-2xl tracking-wide">Criar nova conta</h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              O novo usuário entra pela tela de login com o e-mail e a senha definidos aqui.
+            </p>
+
+            <form
+              className="mt-4 space-y-3"
+              onSubmit={(e) => {
+                e.preventDefault();
+                mut.mutate();
+              }}
+            >
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="E-mail"
+                autoComplete="off"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-flame"
+              />
+              <input
+                type="text"
+                required
+                minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Senha (mín. 6 caracteres)"
+                autoComplete="off"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-flame"
+              />
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value as "admin" | "lanchonete")}
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-flame"
+              >
+                <option value="lanchonete">Lanchonete (operador)</option>
+                <option value="admin">Administrador</option>
+              </select>
+
+              <div className="flex gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="flex-1 rounded-xl border border-border px-4 py-3 text-sm font-semibold"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={mut.isPending}
+                  className="flex-1 rounded-xl bg-flame px-4 py-3 text-sm font-semibold text-white disabled:opacity-50"
+                >
+                  {mut.isPending ? "Criando..." : "Criar conta"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+
 function FullPageMsg({ title, body, action }: { title: string; body?: string; action?: React.ReactNode }) {
   return (
     <div className="grid min-h-screen place-items-center bg-background px-4">
