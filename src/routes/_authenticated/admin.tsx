@@ -8,7 +8,7 @@ import { toast, Toaster } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 import { OrderPrint } from "@/components/OrderPrint";
 import { useServerFn } from "@tanstack/react-start";
-import { createStaffAccount } from "@/lib/manage-accounts.functions";
+import { createStaffAccount, listStaffAccounts } from "@/lib/manage-accounts.functions";
 
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-export type Tab = "items" | "categories" | "store" | "orders" | "clients";
+export type Tab = "items" | "categories" | "store" | "orders" | "clients" | "accounts";
 
 const BRL = (n: number) => Number(n).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -102,6 +102,7 @@ export function AdminPage() {
                 ["store", "Loja"],
                 ["orders", "Pedidos"],
                 ["clients", "Clientes"],
+                ["accounts", "Contas"],
               ] as [Tab, string][]
             ).map(([k, l]) => (
               <button
@@ -139,6 +140,7 @@ export function AdminPage() {
               ["store", "Loja"],
               ["orders", "Pedidos"],
               ["clients", "Clientes"],
+              ["accounts", "Contas"],
             ] as [Tab, string][]
           ).map(([k, l]) => (
             <button
@@ -158,6 +160,7 @@ export function AdminPage() {
         {tab === "store" && <StoreTab />}
         {tab === "orders" && <OrdersTab isMaster={user?.email === "admin@app.com"} />}
         {tab === "clients" && <ClientsTab isMaster={user?.email === "admin@app.com"} />}
+        {tab === "accounts" && <AccountsTab />}
       </main>
     </div>
   );
@@ -169,6 +172,7 @@ function NewAccountButton() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"admin" | "lanchonete">("lanchonete");
   const createAccount = useServerFn(createStaffAccount);
+  const qc = useQueryClient();
 
   const mut = useMutation({
     mutationFn: () => createAccount({ data: { email, password, role } }),
@@ -178,11 +182,13 @@ function NewAccountButton() {
           ? `Conta já existia — senha e perfil atualizados: ${res.email}`
           : `Conta criada: ${res.email}`,
       );
+      qc.invalidateQueries({ queryKey: ["staff_accounts"] });
 
       setEmail("");
       setPassword("");
       setOpen(false);
     },
+
     onError: (e: unknown) =>
       toast.error(e instanceof Error ? e.message : "Não foi possível criar a conta"),
   });
@@ -260,6 +266,88 @@ function NewAccountButton() {
         </div>
       )}
     </>
+  );
+}
+
+function AccountsTab() {
+  const listAccounts = useServerFn(listStaffAccounts);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["staff_accounts"],
+    queryFn: () => listAccounts({}),
+  });
+
+  const fmt = (v: string | null) =>
+    v ? new Date(v).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—";
+
+  const roleLabel = (r: string) =>
+    r === "admin" ? "Administrador" : r === "lanchonete" ? "Lanchonete" : r;
+
+  return (
+    <section>
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h2 className="font-display text-2xl tracking-wide">Contas criadas</h2>
+          <p className="text-xs text-muted-foreground">
+            Todas as contas que podem acessar o painel.
+          </p>
+        </div>
+        <NewAccountButton />
+      </div>
+
+      {isLoading && <p className="mt-6 text-sm text-muted-foreground">Carregando contas...</p>}
+      {error && (
+        <p className="mt-6 text-sm text-red-400">
+          {error instanceof Error ? error.message : "Não foi possível carregar as contas"}
+        </p>
+      )}
+
+      {data && (
+        <div className="mt-6 overflow-x-auto rounded-2xl border border-border">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-secondary/50 text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th className="px-4 py-3">E-mail</th>
+                <th className="px-4 py-3">Perfil</th>
+                <th className="px-4 py-3">Criada em</th>
+                <th className="px-4 py-3">Último acesso</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((a) => (
+                <tr key={a.id} className="border-t border-border">
+                  <td className="px-4 py-3 font-medium">{a.email || "—"}</td>
+                  <td className="px-4 py-3">
+                    {a.roles.length ? (
+                      <span className="flex flex-wrap gap-1">
+                        {a.roles.map((r) => (
+                          <span
+                            key={r}
+                            className="rounded-full bg-flame/15 px-2 py-0.5 text-xs text-flame"
+                          >
+                            {roleLabel(r)}
+                          </span>
+                        ))}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">Sem perfil</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">{fmt(a.createdAt)}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{fmt(a.lastSignInAt)}</td>
+                </tr>
+              ))}
+              {data.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">
+                    Nenhuma conta encontrada.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
   );
 }
 
