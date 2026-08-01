@@ -50,22 +50,7 @@ export function AdminPage() {
     return (
       <FullPageMsg
         title="Login necessário"
-        body={`For the code present, I get the error below.
-
-Please think step-by-step in order to resolve it.
-\`\`\`
-Error: Missing Supabase environment variable(s): SUPABASE_SERVICE_ROLE_KEY. Connect Supabase in Lovable Cloud.
-
-{
-  "timestamp": 1785625002260,
-  "error_type": "RUNTIME_ERROR",
-  "filename": "https://localhost:8080/_serverFn/eyJmaWxlIjoiL3NyYy9saWIvYm9vdHN0cmFwLWFkbWlucy5mdW5jdGlvbnMudHM_dHNzLXNlcnZlcmZuLXNwbGl0IiwiZXhwb3J0IjoiYm9vdHN0cmFwSGFyZGNvZGVkQWRtaW5zX2NyZWF0ZVNlcnZlckZuX2hhbmRsZXIifQ",
-  "lineno": 0,
-  "colno": 0,
-  "stack": "Error: Missing Supabase environment variable(s): SUPABASE_SERVICE_ROLE_KEY. Connect Supabase in Lovable Cloud.\\n    at createSupabaseAdminClient (/dev-server/src/integrations/supabase/client.server.ts:19:11)\\n    at Object.get (/dev-server/src/integrations/supabase/client.server.ts:39:43)\\n    at Object.accept (/dev-server/src/lib/bootstrap-admins.functions.ts:17:53)\\n    at async server (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:803:24)\\n    at async callNextMiddleware (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:288:24)\\n    at async AsyncFunction.__executeServer (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:170:28)\\n    at async eval (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:159:16)\\n    at async eval (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:81:17)\\n    at async handleServerAction (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:79:20)\\n    at async next (/dev-server/node_modules/@tanstack/start-server-core/src/createStartHandler.ts:379:16)",
-  "has_blank_screen": true
-}
-\`\`\``}
+        body="nao funciona"
         action={
           <Link to="/login" className="rounded-xl bg-flame px-5 py-2 font-semibold text-white">
             Ir para login
@@ -77,22 +62,7 @@ Error: Missing Supabase environment variable(s): SUPABASE_SERVICE_ROLE_KEY. Conn
     return (
       <FullPageMsg
         title="Sem permissão"
-        body={`For the code present, I get the error below.
-
-Please think step-by-step in order to resolve it.
-\`\`\`
-Error: Missing Supabase environment variable(s): SUPABASE_SERVICE_ROLE_KEY. Connect Supabase in Lovable Cloud.
-
-{
-  "timestamp": 1785625002260,
-  "error_type": "RUNTIME_ERROR",
-  "filename": "https://localhost:8080/_serverFn/eyJmaWxlIjoiL3NyYy9saWIvYm9vdHN0cmFwLWFkbWlucy5mdW5jdGlvbnMudHM_dHNzLXNlcnZlcmZuLXNwbGl0IiwiZXhwb3J0IjoiYm9vdHN0cmFwSGFyZGNvZGVkQWRtaW5zX2NyZWF0ZVNlcnZlckZuX2hhbmRsZXIifQ",
-  "lineno": 0,
-  "colno": 0,
-  "stack": "Error: Missing Supabase environment variable(s): SUPABASE_SERVICE_ROLE_KEY. Connect Supabase in Lovable Cloud.\\n    at createSupabaseAdminClient (/dev-server/src/integrations/supabase/client.server.ts:19:11)\\n    at Object.get (/dev-server/src/integrations/supabase/client.server.ts:39:43)\\n    at Object.accept (/dev-server/src/lib/bootstrap-admins.functions.ts:17:53)\\n    at async server (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:803:24)\\n    at async callNextMiddleware (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:288:24)\\n    at async AsyncFunction.__executeServer (/dev-server/node_modules/@tanstack/start-client-core/src/createServerFn.ts:170:28)\\n    at async eval (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:159:16)\\n    at async eval (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:81:17)\\n    at async handleServerAction (/dev-server/node_modules/@tanstack/start-server-core/src/server-functions-handler.ts:79:20)\\n    at async next (/dev-server/node_modules/@tanstack/start-server-core/src/createStartHandler.ts:379:16)",
-  "has_blank_screen": true
-}
-\`\`\``}
+        body="nao funciona"
         action={
           <button
             onClick={async () => {
