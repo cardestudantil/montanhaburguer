@@ -160,6 +160,7 @@ export function AdminPage() {
         {tab === "store" && <StoreTab />}
         {tab === "orders" && <OrdersTab isMaster={user?.email === "admin@app.com"} />}
         {tab === "clients" && <ClientsTab isMaster={user?.email === "admin@app.com"} />}
+        {tab === "accounts" && <AccountsTab />}
       </main>
     </div>
   );
