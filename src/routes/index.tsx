@@ -363,7 +363,7 @@ function ItemCard({
               <div className="text-xs text-muted-foreground line-through">{BRL(Number(item.old_price))}</div>
             )}
             {hasAddons && (
-              <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-mustard">+ Adicionais</div>
+              <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-mustard">+ [anexo]</div>
             )}
           </div>
           <button
@@ -443,7 +443,7 @@ function ItemDetailsSheet({
 
           {options.length > 0 && (
             <div className="mt-5">
-              <div className="text-xs font-bold uppercase tracking-wide text-mustard">Adicionais</div>
+              <div className="text-xs font-bold uppercase tracking-wide text-mustard">[anexo]</div>
               <ul className="mt-2 divide-y divide-border rounded-xl border border-border">
                 {options.map((o) => {
                   const q = qtyMap[o.id] ?? 0;
@@ -589,7 +589,7 @@ function CartCard({
                     <div className="break-words text-sm font-semibold">{it.name}</div>
                     {l.addons.length > 0 && (
                       <div className="text-[11px] text-mustard">
-                        <div className="font-semibold">Adicionais:</div>
+                        <div className="font-semibold">[anexo]:</div>
                         <ul>
                           {l.addons.map((a, i) => (
                             <li key={i}>{addonLabel(a)}</li>
@@ -909,7 +909,7 @@ function CheckoutModal({
                           <div className="break-words text-sm font-semibold">{it.name}</div>
                           {l.addons.length > 0 && (
                             <div className="text-[11px] text-mustard">
-                              <div className="font-semibold">Adicionais:</div>
+                              <div className="font-semibold">[anexo]:</div>
                               <ul>
                                 {l.addons.map((a, i) => (
                                   <li key={i}>{addonLabel(a)}</li>
