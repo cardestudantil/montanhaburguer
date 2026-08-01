@@ -14,7 +14,7 @@ export const createStaffAccount = createServerFn({ method: "POST" })
     return { email, password, role } as NewAccount;
   })
   .handler(async ({ data, context }) => {
-    const isMaster = context.user?.email === "admin@app.com" || context.user?.email === "valemaisshopping@yahoo.com.br";
+    const isMaster = context.claims?.email === "admin@app.com" || context.claims?.email === "valemaisshopping@yahoo.com.br";
     
     if (!isMaster) {
       const { data: isAdmin, error: roleCheckErr } = await context.supabase.rpc("has_role", {
@@ -87,7 +87,7 @@ export type StaffAccount = {
 export const listStaffAccounts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<StaffAccount[]> => {
-    const isMaster = context.user?.email === "admin@app.com" || context.user?.email === "valemaisshopping@yahoo.com.br";
+    const isMaster = context.claims?.email === "admin@app.com" || context.claims?.email === "valemaisshopping@yahoo.com.br";
     
     if (!isMaster) {
       const { data: isAdmin, error: roleCheckErr } = await context.supabase.rpc("has_role", {
@@ -147,7 +147,7 @@ export const deleteStaffAccount = createServerFn({ method: "POST" })
     return id;
   })
   .handler(async ({ data: userId, context }) => {
-    const isMaster = context.user?.email === "admin@app.com" || context.user?.email === "valemaisshopping@yahoo.com.br";
+    const isMaster = context.claims?.email === "admin@app.com" || context.claims?.email === "valemaisshopping@yahoo.com.br";
     
     if (!isMaster) {
       const { data: isAdmin, error: roleCheckErr } = await context.supabase.rpc("has_role", {
