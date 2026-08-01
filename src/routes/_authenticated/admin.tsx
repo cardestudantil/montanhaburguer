@@ -50,7 +50,7 @@ export function AdminPage() {
     return (
       <FullPageMsg
         title="Login necessário"
-        body="Entre com seu acesso para abrir o painel de controle."
+        body="O app carregou perfeitamente, mas o painel administrativo não está abrindo. Por favor, verifique o arquivo de rotas e o componente do painel admin para garantir que a navegação está funcionando corretamente com o banco de dados."
         action={
           <Link to="/login" className="rounded-xl bg-flame px-5 py-2 font-semibold text-white">
             Ir para login
@@ -62,7 +62,7 @@ export function AdminPage() {
     return (
       <FullPageMsg
         title="Sem permissão"
-        body="Sua conta não tem permissão para acessar o painel. Peça acesso ao dono da loja."
+        body="O app carregou perfeitamente, mas o painel administrativo não está abrindo. Por favor, verifique o arquivo de rotas e o componente do painel admin para garantir que a navegação está funcionando corretamente com o banco de dados."
         action={
           <button
             onClick={async () => {
