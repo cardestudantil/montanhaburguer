@@ -7,6 +7,9 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast, Toaster } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 import { OrderPrint } from "@/components/OrderPrint";
+import { useServerFn } from "@tanstack/react-start";
+import { createStaffAccount } from "@/lib/manage-accounts.functions";
+
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Painel Admin — Burguer" }] }),
