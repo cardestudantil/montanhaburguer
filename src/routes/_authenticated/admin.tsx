@@ -172,6 +172,7 @@ function NewAccountButton() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"admin" | "lanchonete">("lanchonete");
   const createAccount = useServerFn(createStaffAccount);
+  const qc = useQueryClient();
 
   const mut = useMutation({
     mutationFn: () => createAccount({ data: { email, password, role } }),
@@ -181,11 +182,13 @@ function NewAccountButton() {
           ? `Conta já existia — senha e perfil atualizados: ${res.email}`
           : `Conta criada: ${res.email}`,
       );
+      qc.invalidateQueries({ queryKey: ["staff_accounts"] });
 
       setEmail("");
       setPassword("");
       setOpen(false);
     },
+
     onError: (e: unknown) =>
       toast.error(e instanceof Error ? e.message : "Não foi possível criar a conta"),
   });
