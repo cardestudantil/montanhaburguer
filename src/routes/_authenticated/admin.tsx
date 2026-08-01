@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Trash2 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +9,7 @@ import { toast, Toaster } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 import { OrderPrint } from "@/components/OrderPrint";
 import { useServerFn } from "@tanstack/react-start";
-import { createStaffAccount, listStaffAccounts } from "@/lib/manage-accounts.functions";
+import { createStaffAccount, listStaffAccounts, deleteStaffAccount } from "@/lib/manage-accounts.functions";
 
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -271,6 +272,8 @@ function NewAccountButton() {
 
 function AccountsTab() {
   const listAccounts = useServerFn(listStaffAccounts);
+  const deleteAccount = useServerFn(deleteStaffAccount);
+  const qc = useQueryClient();
   const { data, isLoading, error } = useQuery({
     queryKey: ["staff_accounts"],
     queryFn: () => listAccounts({}),
@@ -278,6 +281,15 @@ function AccountsTab() {
 
   const fmt = (v: string | null) =>
     v ? new Date(v).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—";
+
+  const deleteMut = useMutation({
+    mutationFn: (id: string) => deleteAccount({ data: id }),
+    onSuccess: () => {
+      toast.success("Conta removida");
+      qc.invalidateQueries({ queryKey: ["staff_accounts"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao deletar"),
+  });
 
   const roleLabel = (r: string) =>
     r === "admin" ? "Administrador" : r === "lanchonete" ? "Lanchonete" : r;
@@ -310,6 +322,7 @@ function AccountsTab() {
                 <th className="px-4 py-3">Perfil</th>
                 <th className="px-4 py-3">Criada em</th>
                 <th className="px-4 py-3">Último acesso</th>
+                <th className="px-4 py-3 text-right">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -334,11 +347,24 @@ function AccountsTab() {
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{fmt(a.createdAt)}</td>
                   <td className="px-4 py-3 text-muted-foreground">{fmt(a.lastSignInAt)}</td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      onClick={() => {
+                        if (confirm(`Deseja realmente deletar a conta ${a.email}?`)) {
+                          deleteMut.mutate(a.id);
+                        }
+                      }}
+                      className="rounded-lg p-2 text-red-400 hover:bg-red-500/15"
+                      title="Deletar conta"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </td>
                 </tr>
               ))}
               {data.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">
+                  <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
                     Nenhuma conta encontrada.
                   </td>
                 </tr>

@@ -131,3 +131,31 @@ export const listStaffAccounts = createServerFn({ method: "GET" })
       }))
       .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
   });
+
+export const deleteStaffAccount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((id: string) => {
+    if (!id) throw new Error("ID da conta é obrigatório");
+    return id;
+  })
+  .handler(async ({ data: userId, context }) => {
+    const { data: isAdmin, error: roleCheckErr } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (roleCheckErr) throw roleCheckErr;
+    if (!isAdmin) throw new Error("Apenas administradores podem deletar contas");
+
+    if (userId === context.userId) {
+      throw new Error("Você não pode deletar sua própria conta.");
+    }
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // O delete do user na Auth cascadeia para user_roles via FK no banco se configurado com ON DELETE CASCADE.
+    // Nossa tabela user_roles tem essa configuração.
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+    if (error) throw new Error(error.message);
+
+    return { ok: true };
+  });
