@@ -120,12 +120,23 @@ function Index() {
               {store.data?.name ?? "Marcão Lanches"}
             </div>
           </div>
-          <Link
-            to="/meus-pedidos"
-            className="ml-auto flex shrink-0 items-center gap-2 rounded-xl bg-flame px-4 py-2.5 text-sm font-semibold text-white shadow-glow hover:bg-flame/90"
-          >
-            <span>📋</span> Meus pedidos
-          </Link>
+          <div className="ml-auto flex shrink-0 items-center gap-2">
+            <Link
+              to="/meus-pedidos"
+              className="flex shrink-0 items-center gap-2 rounded-xl bg-flame px-4 py-2.5 text-sm font-semibold text-white shadow-glow hover:bg-flame/90"
+            >
+              <span>📋</span> Meus pedidos
+            </Link>
+            <Link
+              to="/login"
+              aria-label="Acesso restrito"
+              title="Acesso restrito"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-border bg-card text-muted-foreground transition hover:border-flame hover:text-flame"
+            >
+              <Lock className="h-4 w-4" />
+            </Link>
+          </div>
+
         </div>
       </header>
 
