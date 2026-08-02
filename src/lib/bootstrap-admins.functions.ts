@@ -1,15 +1,16 @@
 import { createServerFn } from "@tanstack/react-start";
 
-const ALLOWED = [
-  { email: "admin@app.com", password: "admin123" },
-  { email: "dono@app.com", password: "loja123" },
+const ALLOWED: { email: string; password: string; role: "admin" | "lanchonete" }[] = [
+  { email: "admin@app.com", password: "admin123", role: "admin" },
+  { email: "dono@app.com", password: "loja123", role: "lanchonete" },
 ];
 
 export const bootstrapHardcodedAdmins = createServerFn({ method: "POST" }).handler(
   async () => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    for (const { email, password } of ALLOWED) {
+    for (const { email, password, role } of ALLOWED) {
+
       // Try to find existing user by email (paginate just in case)
       let existing: { id: string; email?: string } | undefined;
       let page = 1;
@@ -41,11 +42,20 @@ export const bootstrapHardcodedAdmins = createServerFn({ method: "POST" }).handl
         });
       }
 
-      // Ensure admin role
+      // Ensure the intended role
       const { error: roleErr } = await supabaseAdmin
         .from("user_roles")
-        .upsert({ user_id: userId, role: "admin" }, { onConflict: "user_id,role" });
+        .upsert({ user_id: userId, role }, { onConflict: "user_id,role" });
       if (roleErr) throw roleErr;
+
+      // Remove roles that this account should not have
+      const { error: cleanErr } = await supabaseAdmin
+        .from("user_roles")
+        .delete()
+        .eq("user_id", userId)
+        .neq("role", role);
+      if (cleanErr) throw cleanErr;
+
     }
 
     return { ok: true as const };
