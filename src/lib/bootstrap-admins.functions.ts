@@ -42,11 +42,20 @@ export const bootstrapHardcodedAdmins = createServerFn({ method: "POST" }).handl
         });
       }
 
-      // Ensure admin role
+      // Ensure the intended role
       const { error: roleErr } = await supabaseAdmin
         .from("user_roles")
-        .upsert({ user_id: userId, role: "admin" }, { onConflict: "user_id,role" });
+        .upsert({ user_id: userId, role }, { onConflict: "user_id,role" });
       if (roleErr) throw roleErr;
+
+      // Remove roles that this account should not have
+      const { error: cleanErr } = await supabaseAdmin
+        .from("user_roles")
+        .delete()
+        .eq("user_id", userId)
+        .neq("role", role);
+      if (cleanErr) throw cleanErr;
+
     }
 
     return { ok: true as const };
