@@ -1781,7 +1781,7 @@ function OrdersTab({ isMaster = false }: { isMaster?: boolean }) {
                             {ads.length > 0 && (
                               <div className="ml-4 rounded-md border-l-2 border-primary/60 bg-primary/5 px-2 py-1">
                                 <div className="text-[10px] font-bold uppercase tracking-wide text-primary">
-                                  [anexo]
+                                  Adicionais
                                 </div>
                                 <ul className="mt-0.5 space-y-0.5 text-sm">
                                   {ads.map((a, i) => (
@@ -2241,7 +2241,7 @@ function AddonsManager({ itemId }: { itemId: string }) {
   return (
     <div className="rounded-xl border border-border bg-secondary/20 p-3">
       <div className="mb-2 flex items-center justify-between">
-        <div className="text-xs font-bold uppercase text-flame">[anexo]</div>
+        <div className="text-xs font-bold uppercase text-flame">Adicionais</div>
         <span className="text-[11px] text-muted-foreground">{list.length} item(s)</span>
       </div>
 

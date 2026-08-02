@@ -247,7 +247,7 @@ function MyOrdersPage() {
                             </div>
                             {addons.length > 0 && (
                               <div className="mt-1 text-xs text-muted-foreground">
-                                <div className="font-semibold">[anexo]:</div>
+                                <div className="font-semibold">Adicionais:</div>
                                 <ul className="space-y-0.5">
                                   {addons.map((a, idx) => (
                                     <li key={idx}>
