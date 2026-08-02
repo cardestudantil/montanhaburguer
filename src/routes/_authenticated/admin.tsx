@@ -447,7 +447,7 @@ function ItemsTab() {
         price: Number(i.price ?? 0),
         old_price: i.old_price ? Number(i.old_price) : null,
         image_url: i.image_url ?? null,
-        tag: i.tag ?? null,
+        
         featured: !!i.featured,
         active: i.active ?? true,
         position: Number(i.position ?? 0),
@@ -516,7 +516,7 @@ function ItemsTab() {
                 <div className="text-xs text-muted-foreground">
                   {cats.data?.find((c) => c.id === i.category_id)?.name ?? "Sem categoria"}
                 </div>
-                {i.tag && <div className="mt-0.5 text-[10px] font-bold text-flame">{i.tag}</div>}
+                
               </div>
               <div className="shrink-0 text-right">
                 <div className="font-bold">{BRL(Number(i.price))}</div>
@@ -571,7 +571,7 @@ function ItemsTab() {
                     {i.image_url && <img src={i.image_url} alt="" className="h-10 w-10 rounded-lg object-cover" />}
                     <div className="min-w-0">
                       <div className="font-semibold">{i.name}</div>
-                      {i.tag && <div className="text-[10px] font-bold text-flame">{i.tag}</div>}
+                      
                     </div>
                   </div>
                 </td>
@@ -674,19 +674,6 @@ function ItemsTab() {
                 onChange={(url) => setEditing((prev) => ({ ...(prev ?? {}), image_url: url }))}
                 folder="menu"
               />
-            </Field>
-            <Field label="Tag (opcional)">
-              <select
-                value={editing.tag ?? ""}
-                onChange={(e) => setEditing({ ...editing, tag: e.target.value || null })}
-                className={inputCls}
-              >
-                <option value="">Nenhuma</option>
-                <option>MAIS PEDIDO</option>
-                <option>RECOMENDADO</option>
-                <option>NOVIDADE</option>
-                <option>EDIÇÃO LIMITADA</option>
-              </select>
             </Field>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Field label="Posição">
