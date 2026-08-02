@@ -81,6 +81,21 @@ export function AdminPage() {
       />
     );
 
+  const isMaster =
+    user?.email === "admin@app.com" || user?.email === "valemaisshopping@yahoo.com.br";
+  const allTabs: [Tab, string][] = [
+    ["items", "Cardápio"],
+    ["categories", "Categorias"],
+    ["store", "Loja"],
+    ["orders", "Pedidos"],
+    ["clients", "Clientes"],
+    ["accounts", "Contas"],
+  ];
+  const tabs = isMaster
+    ? allTabs
+    : allTabs.filter(([k]) => k === "items" || k === "categories" || k === "store" || k === "orders");
+  const activeTab = tabs.some(([k]) => k === tab) ? tab : "items";
+
   return (
     <div className="min-h-screen bg-background">
       <Toaster theme="dark" position="top-center" />
@@ -96,21 +111,12 @@ export function AdminPage() {
             </div>
           </Link>
           <nav className="ml-6 hidden gap-1 md:flex">
-            {(
-              [
-                ["items", "Cardápio"],
-                ["categories", "Categorias"],
-                ["store", "Loja"],
-                ["orders", "Pedidos"],
-                ["clients", "Clientes"],
-                ["accounts", "Contas"],
-              ] as [Tab, string][]
-            ).map(([k, l]) => (
+            {tabs.map(([k, l]) => (
               <button
                 key={k}
                 onClick={() => setTab(k)}
                 className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
-                  tab === k ? "bg-flame text-white" : "text-muted-foreground hover:text-foreground"
+                  activeTab === k ? "bg-flame text-white" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {l}
@@ -119,7 +125,7 @@ export function AdminPage() {
           </nav>
           <div className="ml-auto flex items-center gap-3">
             <StoreOpenToggle />
-            <NewAccountButton />
+            {isMaster && <NewAccountButton />}
             <span className="hidden text-xs text-muted-foreground md:inline">{user?.email}</span>
 
             <button
@@ -134,20 +140,11 @@ export function AdminPage() {
           </div>
         </div>
         <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 pb-2 md:hidden">
-          {(
-            [
-              ["items", "Cardápio"],
-              ["categories", "Categorias"],
-              ["store", "Loja"],
-              ["orders", "Pedidos"],
-              ["clients", "Clientes"],
-              ["accounts", "Contas"],
-            ] as [Tab, string][]
-          ).map(([k, l]) => (
+          {tabs.map(([k, l]) => (
             <button
               key={k}
               onClick={() => setTab(k)}
-              className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold ${tab === k ? "bg-flame text-white" : "bg-secondary text-muted-foreground"}`}
+              className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold ${activeTab === k ? "bg-flame text-white" : "bg-secondary text-muted-foreground"}`}
             >
               {l}
             </button>
@@ -156,16 +153,17 @@ export function AdminPage() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-8">
-        {tab === "items" && <ItemsTab />}
-        {tab === "categories" && <CategoriesTab />}
-        {tab === "store" && <StoreTab />}
-        {tab === "orders" && <OrdersTab isMaster={user?.email === "admin@app.com" || user?.email === "valemaisshopping@yahoo.com.br"} />}
-        {tab === "clients" && <ClientsTab isMaster={user?.email === "admin@app.com" || user?.email === "valemaisshopping@yahoo.com.br"} />}
-        {tab === "accounts" && <AccountsTab />}
+        {activeTab === "items" && <ItemsTab />}
+        {activeTab === "categories" && <CategoriesTab />}
+        {activeTab === "store" && <StoreTab />}
+        {activeTab === "orders" && <OrdersTab isMaster={isMaster} />}
+        {activeTab === "clients" && isMaster && <ClientsTab isMaster={isMaster} />}
+        {activeTab === "accounts" && isMaster && <AccountsTab />}
       </main>
     </div>
   );
 }
+
 
 function NewAccountButton() {
   const [open, setOpen] = useState(false);
