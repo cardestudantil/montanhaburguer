@@ -384,7 +384,7 @@ function FullPageMsg({ title, body, action }: { title: string; body?: string; ac
         {body && (
           <p className="mt-2 whitespace-pre-wrap text-left text-xs font-mono bg-secondary/50 p-4 rounded-xl overflow-auto max-h-[60vh]">
             {body === "nao funciona" 
-              ? "\"Por favor, atualize as metatags Open Graph (OG) no arquivo index.html do projeto para que, quando o link for compartilhado, exiba o logotipo e os dados do meu estabelecimento. Configure as seguintes tags dentro do <head>:\n\nog:image: [Cole aqui o link de internet da imagem do seu logotipo]\n\nog:title: [Escreva aqui o nome do seu estabelecimento]\n\nog:description: [Escreva uma frase curta descrevendo o seu negócio]\n\nCertifique-se de configurar também as tags og:image:width como 1200 e og:image:height como 630 para garantir que a miniatura apareça corretamente no WhatsApp e redes sociais.\""
+              ? "crie um cadeado de login na parte superior"
               : body}
           </p>
         )}
