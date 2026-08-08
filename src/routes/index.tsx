@@ -5,7 +5,7 @@ import { Lock, WifiOff, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
 
 import { supabase } from "@/integrations/supabase/client";
-import { addonsQuery, categoriesQuery, menuItemsQuery, storeInfoQuery } from "@/lib/queries";
+import { addonsQuery, categoriesQuery, menuItemsQuery, storeInfoQuery, categoryAddonsQuery } from "@/lib/queries";
 import { toast, Toaster } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 import {
