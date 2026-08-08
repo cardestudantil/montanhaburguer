@@ -40,8 +40,16 @@ export function useAuth() {
       .from("user_roles")
       .select("role")
       .eq("user_id", user.id)
-      .then(({ data }) => {
+      .then(({ data, error }) => {
         if (cancelled) return;
+        
+        // If there's a network error, don't clear roles, keep existing state
+        if (error && error.message?.includes('fetch')) {
+          console.warn("[Auth] Network error while fetching roles, keeping current state");
+          setRolesLoading(false);
+          return;
+        }
+
         const roles = (data ?? []).map((r) => r.role);
         setIsAdmin(roles.includes("admin"));
         setIsLanchonete(roles.includes("lanchonete"));

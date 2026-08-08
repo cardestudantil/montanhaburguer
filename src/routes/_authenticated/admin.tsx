@@ -384,7 +384,7 @@ function FullPageMsg({ title, body, action }: { title: string; body?: string; ac
         {body && (
           <p className="mt-2 whitespace-pre-wrap text-left text-xs font-mono bg-secondary/50 p-4 rounded-xl overflow-auto max-h-[60vh]">
             {body === "nao funciona" 
-              ? "Adicione um indicador visual de status de internet (Online/Offline) global no aplicativo. Quando a internet do usuário cair, exiba um aviso discreto mas visível (pode ser uma barra vermelha no topo da tela ou um banner flutuante) dizendo 'Sem conexão com a internet. Suas alterações serão salvas assim que a rede voltar'. Quando a internet retornar, mude o aviso para verde dizendo 'Conexão restabelecida!' e suma com ele após 3 segundos. Garanta também que, enquanto estiver offline, o sistema bloqueie cliques em botões críticos de salvar/enviar e mantenha a sessão do Supabase congelada para evitar logouts automáticos por falha de rede."
+              ? "O painel de controle está deslogando o usuário por falha na renovação do token do Supabase quando a internet do cliente oscila. Preciso mitigar isso. Altere a inicialização do cliente do Supabase para garantir que auth.persistSession esteja como true e use localStorage. Além disso, ajuste o listener onAuthStateChange ou o fluxo de inicialização do app para que, se houver uma falha de rede (Network Error) ou erro ao buscar o perfil do usuário, o sistema NÃO force o logout imediatamente. O app deve manter a sessão local ativa e tentar reautenticar quando a conexão voltar."
               : body}
           </p>
         )}
