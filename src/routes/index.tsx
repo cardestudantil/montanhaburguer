@@ -309,6 +309,7 @@ function Index() {
         <ItemDetailsSheet
           item={detailItem}
           options={addonsByItem[detailItem.id] ?? []}
+          categoryOptions={(catAddons.data ?? []).filter(a => a.category_id === detailItem.category_id && a.active)}
           onClose={() => setDetailItem(null)}
           onConfirm={(picked, notes, qty) => {
             addLine(detailItem.id, picked, notes, qty);
