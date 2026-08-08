@@ -444,11 +444,13 @@ function ItemCard({
 function ItemDetailsSheet({
   item,
   options,
+  categoryOptions = [],
   onClose,
   onConfirm,
 }: {
   item: Tables<"menu_items">;
   options: Tables<"menu_item_addons">[];
+  categoryOptions?: Tables<"category_addons">[];
   onClose: () => void;
   onConfirm: (picked: SelectedAddon[], notes: string, qty: number) => void;
 }) {
@@ -456,7 +458,13 @@ function ItemDetailsSheet({
   const [notes, setNotes] = useState("");
   const [itemQty, setItemQty] = useState(1);
   const setQty = (id: string, q: number) => setQtyMap((p) => ({ ...p, [id]: Math.max(0, q) }));
-  const selected: SelectedAddon[] = options
+
+  const allAvailableAddons = [
+    ...options.map(o => ({ ...o, type: 'item' })),
+    ...categoryOptions.map(o => ({ ...o, type: 'category' }))
+  ];
+
+  const selected: SelectedAddon[] = allAvailableAddons
     .filter((o) => (qtyMap[o.id] ?? 0) > 0)
     .map((o) => ({ id: o.id, name: o.name, price: Number(o.price), qty: qtyMap[o.id] }));
   const unit = Number(item.price) + addonsTotal(selected);
