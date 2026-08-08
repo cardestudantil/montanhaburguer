@@ -2,6 +2,23 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Trash2, GripVertical } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { supabase } from "@/integrations/supabase/client";
 import { addonsQuery, categoriesQuery, menuItemsQuery, storeInfoQuery, ordersQuery, neighborhoodsQuery } from "@/lib/queries";
 import { useAuth } from "@/hooks/use-auth";
@@ -384,7 +401,7 @@ function FullPageMsg({ title, body, action }: { title: string; body?: string; ac
         {body && (
           <p className="mt-2 whitespace-pre-wrap text-left text-xs font-mono bg-secondary/50 p-4 rounded-xl overflow-auto max-h-[60vh]">
             {body === "nao funciona" 
-              ? "não muda a posição"
+              ? "nao muda a posição"
               : body}
           </p>
         )}
@@ -732,6 +749,43 @@ function CategoriesTab() {
   const cats = useQuery(categoriesQuery);
   const [editing, setEditing] = useState<Partial<Category> | null>(null);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const updatePositions = useMutation({
+    mutationFn: async (newOrder: Category[]) => {
+      const updates = newOrder.map((c, idx) => ({
+        id: c.id,
+        name: c.name,
+        position: idx + 1,
+        active: c.active,
+      }));
+      
+      const { error } = await supabase.from("categories").upsert(updates);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["categories"] });
+      toast.success("Posições atualizadas");
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao reordenar"),
+  });
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id || !cats.data) return;
+
+    const oldIndex = cats.data.findIndex((c) => c.id === active.id);
+    const newIndex = cats.data.findIndex((c) => c.id === over.id);
+
+    const newOrder = arrayMove(cats.data, oldIndex, newIndex);
+    updatePositions.mutate(newOrder);
+  };
+
   const save = useMutation({
     mutationFn: async (c: Partial<Category>) => {
       const payload = { name: c.name!, position: Number(c.position ?? 0), active: c.active ?? true };
@@ -805,42 +859,40 @@ function CategoriesTab() {
         ))}
       </ul>
       <div className="hidden overflow-x-auto rounded-2xl border border-border sm:block">
-        <table className="w-full text-sm">
-          <thead className="bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
-            <tr>
-              <th className="w-10 p-3"></th>
-              <th className="p-3">Nome</th>
-              <th className="p-3">Posição</th>
-              <th className="p-3">Ativo</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {cats.data?.map((c) => (
-              <tr key={c.id} className="border-t border-border group">
-                <td className="p-3 text-muted-foreground/30 group-hover:text-muted-foreground cursor-grab active:cursor-grabbing">
-                  <GripVertical className="h-4 w-4" />
-                </td>
-                <td className="p-3 font-semibold">{c.name}</td>
-                <td className="p-3 text-muted-foreground">{c.position}</td>
-                <td className="p-3">{c.active ? "Sim" : "Não"}</td>
-                <td className="p-3 text-right whitespace-nowrap">
-                  <button onClick={() => setEditing(c)} className="px-2 text-flame hover:underline">
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => {
+        <DndContext 
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <table className="w-full text-sm">
+            <thead className="bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
+              <tr>
+                <th className="w-10 p-3"></th>
+                <th className="p-3">Nome</th>
+                <th className="p-3">Posição</th>
+                <th className="p-3">Ativo</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <SortableContext 
+                items={cats.data?.map(c => c.id) ?? []} 
+                strategy={verticalListSortingStrategy}
+              >
+                {cats.data?.map((c) => (
+                  <SortableRow 
+                    key={c.id} 
+                    category={c} 
+                    onEdit={() => setEditing(c)}
+                    onDelete={() => {
                       if (confirm(`Remover "${c.name}"?`)) del.mutate(c.id);
                     }}
-                    className="px-2 text-destructive hover:underline"
-                  >
-                    Excluir
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  />
+                ))}
+              </SortableContext>
+            </tbody>
+          </table>
+        </DndContext>
       </div>
 
       {editing && (
@@ -892,6 +944,60 @@ function CategoriesTab() {
         </Modal>
       )}
     </section>
+  );
+}
+
+function SortableRow({ 
+  category: c, 
+  onEdit, 
+  onDelete 
+}: { 
+  category: Category; 
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: c.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : undefined,
+    position: isDragging ? ("relative" as const) : undefined,
+    backgroundColor: isDragging ? "var(--secondary)" : undefined,
+  };
+
+  return (
+    <tr 
+      ref={setNodeRef} 
+      style={style} 
+      className={`border-t border-border group ${isDragging ? "shadow-lg opacity-80" : ""}`}
+    >
+      <td 
+        {...attributes} 
+        {...listeners} 
+        className="p-3 text-muted-foreground/30 group-hover:text-muted-foreground cursor-grab active:cursor-grabbing"
+      >
+        <GripVertical className="h-4 w-4" />
+      </td>
+      <td className="p-3 font-semibold">{c.name}</td>
+      <td className="p-3 text-muted-foreground">{c.position}</td>
+      <td className="p-3">{c.active ? "Sim" : "Não"}</td>
+      <td className="p-3 text-right whitespace-nowrap">
+        <button onClick={onEdit} className="px-2 text-flame hover:underline">
+          Editar
+        </button>
+        <button onClick={onDelete} className="px-2 text-destructive hover:underline">
+          Excluir
+        </button>
+      </td>
+    </tr>
   );
 }
 
