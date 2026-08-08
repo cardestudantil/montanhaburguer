@@ -13,6 +13,17 @@ export const categoriesQuery = queryOptions({
   },
 });
 
+export const categoryAddonsQuery = queryOptions({
+  queryKey: ["category_addons"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("category_addons")
+      .select("*")
+      .order("position", { ascending: true });
+    if (error) throw error;
+    return data ?? [];
+  },
+
 export const menuItemsQuery = queryOptions({
   queryKey: ["menu_items"],
   queryFn: async () => {

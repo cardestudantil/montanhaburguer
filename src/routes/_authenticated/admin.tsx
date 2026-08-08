@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Trash2, GripVertical } from "lucide-react";
+import { Trash2, GripVertical, Plus } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -20,7 +20,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { supabase } from "@/integrations/supabase/client";
-import { addonsQuery, categoriesQuery, menuItemsQuery, storeInfoQuery, ordersQuery, neighborhoodsQuery } from "@/lib/queries";
+import { addonsQuery, categoriesQuery, menuItemsQuery, storeInfoQuery, ordersQuery, neighborhoodsQuery, categoryAddonsQuery } from "@/lib/queries";
 import { useAuth } from "@/hooks/use-auth";
 import { toast, Toaster } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
@@ -943,7 +943,179 @@ function CategoriesTab() {
           </form>
         </Modal>
       )}
+      
+      {editing && editing.id && (
+        <div className="mt-8">
+          <CategoryAddonsManager categoryId={editing.id} />
+        </div>
+      )}
     </section>
+  );
+}
+
+function CategoryAddonsManager({ categoryId }: { categoryId: string }) {
+  const qc = useQueryClient();
+  const { data: allAddons } = useQuery(categoryAddonsQuery);
+  const addons = allAddons?.filter((a) => a.category_id === categoryId) ?? [];
+  const [editing, setEditing] = useState<Partial<Tables<"category_addons">> | null>(null);
+
+  const save = useMutation({
+    mutationFn: async (a: Partial<Tables<"category_addons">>) => {
+      const payload = {
+        category_id: categoryId,
+        name: a.name!,
+        price: Number(a.price ?? 0),
+        active: a.active ?? true,
+        position: Number(a.position ?? 0),
+      };
+      if (a.id) {
+        const { error } = await supabase.from("category_addons").update(payload).eq("id", a.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("category_addons").insert(payload);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["category_addons"] });
+      setEditing(null);
+      toast.success("Adicional salvo");
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao salvar"),
+  });
+
+  const del = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("category_addons").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["category_addons"] });
+      toast.success("Adicional removido");
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao remover"),
+  });
+
+  return (
+    <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h3 className="font-display text-xl">Adicionais por Categoria</h3>
+          <p className="text-xs text-muted-foreground">
+            Estes adicionais aparecerão em TODOS os itens desta categoria.
+          </p>
+        </div>
+        <button
+          onClick={() => setEditing({ active: true, position: addons.length + 1 })}
+          className="flex items-center gap-1 rounded-lg bg-secondary px-3 py-1.5 text-xs font-semibold hover:bg-secondary/80"
+        >
+          <Plus className="h-3 w-3" /> Novo adicional
+        </button>
+      </div>
+
+      <div className="space-y-2">
+        {addons.map((a) => (
+          <div
+            key={a.id}
+            className="flex items-center justify-between rounded-xl border border-border bg-background/50 p-3"
+          >
+            <div>
+              <div className="text-sm font-medium">{a.name}</div>
+              <div className="text-xs text-muted-foreground">{BRL(a.price)}</div>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => setEditing(a)} className="text-xs text-flame hover:underline">
+                Editar
+              </button>
+              <button
+                onClick={() => {
+                  if (confirm(`Remover adicional "${a.name}"?`)) del.mutate(a.id);
+                }}
+                className="text-xs text-destructive hover:underline"
+              >
+                Remover
+              </button>
+            </div>
+          </div>
+        ))}
+        {addons.length === 0 && (
+          <div className="py-4 text-center text-xs text-muted-foreground">
+            Nenhum adicional vinculado a esta categoria.
+          </div>
+        )}
+      </div>
+
+      {editing && (
+        <Modal
+          onClose={() => setEditing(null)}
+          title={editing.id ? "Editar adicional" : "Novo adicional da categoria"}
+        >
+          <form
+            className="space-y-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              save.mutate(editing);
+            }}
+          >
+            <Field label="Nome">
+              <input
+                required
+                value={editing.name ?? ""}
+                onChange={(e) => setEditing({ ...editing, name: e.target.value })}
+                className={inputCls}
+                placeholder="Ex: Bacon Extra"
+              />
+            </Field>
+            <Field label="Preço (R$)">
+              <input
+                type="number"
+                step="0.01"
+                required
+                value={editing.price ?? ""}
+                onChange={(e) => setEditing({ ...editing, price: e.target.value as unknown as number })}
+                className={inputCls}
+              />
+            </Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Posição">
+                <input
+                  type="number"
+                  value={editing.position ?? 0}
+                  onChange={(e) => setEditing({ ...editing, position: Number(e.target.value) })}
+                  className={inputCls}
+                />
+              </Field>
+              <div className="flex items-end pb-2">
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={!!editing.active}
+                    onChange={(e) => setEditing({ ...editing, active: e.target.checked })}
+                  />
+                  Ativo
+                </label>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setEditing(null)}
+                className="rounded-xl border border-border px-4 py-2 text-sm"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={save.isPending}
+                className="rounded-xl bg-flame px-5 py-2 text-sm font-semibold text-white"
+              >
+                {save.isPending ? "Salvando..." : "Salvar"}
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
+    </div>
   );
 }
 
