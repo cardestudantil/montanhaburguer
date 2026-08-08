@@ -98,16 +98,6 @@ function Index() {
   if (store.isLoading || !store.data) {
     return (
       <div className="grid min-h-screen place-items-center bg-background text-foreground">
-        <style dangerouslySetInnerHTML={{ __html: `
-          button[type="submit"], 
-          button:has(svg.lucide-shopping-bag),
-          button:has(svg.lucide-plus),
-          .btn-critical { 
-            pointer-events: none !important; 
-            opacity: 0.6 !important; 
-            cursor: not-allowed !important;
-          }
-        `}} />
         <div className="fixed top-0 left-0 right-0 z-[9999] animate-in fade-in slide-in-from-top duration-300">
           <div className="flex items-center justify-center gap-2 bg-red-600 px-4 py-2 text-center text-xs font-bold text-white shadow-lg">
             <WifiOff className="h-3 w-3" />
