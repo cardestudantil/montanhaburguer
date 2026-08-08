@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Lock, WifiOff } from "lucide-react";
+import { Lock, WifiOff, Trash2 } from "lucide-react";
 
 
 import { supabase } from "@/integrations/supabase/client";
@@ -988,10 +988,11 @@ function CheckoutModal({
                               onClick={() => {
                                 for (let i = 0; i < l.qty; i++) onDec(l.key);
                               }}
-                              className="rounded-full border border-border px-2 py-1 text-[11px] font-semibold text-muted-foreground hover:border-flame hover:text-flame"
+                              className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-border text-destructive hover:bg-destructive/10"
                               aria-label="Remover item"
+                              title="Remover item"
                             >
-                              Remover
+                              <Trash2 className="h-3.5 w-3.5" />
                             </button>
                           </div>
                         </div>
