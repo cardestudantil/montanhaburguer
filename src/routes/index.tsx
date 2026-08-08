@@ -992,7 +992,7 @@ function CheckoutModal({
                               aria-label="Remover item"
                               title="Remover item"
                             >
-                              <span className="text-xs">🗑</span>
+                              <Trash2 className="h-3.5 w-3.5" />
                             </button>
                           </div>
                         </div>
