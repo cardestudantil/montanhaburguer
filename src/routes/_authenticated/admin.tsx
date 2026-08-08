@@ -139,7 +139,7 @@ export function AdminPage() {
             </button>
           </div>
         </div>
-        <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 pb-2 md:hidden">
+        <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 pb-2 scrollbar-hide active:cursor-grabbing md:hidden">
           {tabs.map(([k, l]) => (
             <button
               key={k}
