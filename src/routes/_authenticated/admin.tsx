@@ -384,7 +384,7 @@ function FullPageMsg({ title, body, action }: { title: string; body?: string; ac
         {body && (
           <p className="mt-2 whitespace-pre-wrap text-left text-xs font-mono bg-secondary/50 p-4 rounded-xl overflow-auto max-h-[60vh]">
             {body === "nao funciona" 
-              ? "O painel de controle está deslogando o usuário por falha na renovação do token do Supabase quando a internet do cliente oscila. Preciso mitigar isso. Altere a inicialização do cliente do Supabase para garantir que auth.persistSession esteja como true e use localStorage. Além disso, ajuste o listener onAuthStateChange ou o fluxo de inicialização do app para que, se houver uma falha de rede (Network Error) ou erro ao buscar o perfil do usuário, o sistema NÃO force o logout imediatamente. O app deve manter a sessão local ativa e tentar reautenticar quando a conexão voltar."
+              ? "coloque o scrol para arrastar as categorias"
               : body}
           </p>
         )}
