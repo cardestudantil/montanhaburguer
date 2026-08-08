@@ -509,11 +509,11 @@ function ItemDetailsSheet({
             </div>
           )}
 
-          {options.length > 0 && (
+          {allAvailableAddons.length > 0 && (
             <div className="mt-5">
               <div className="text-xs font-bold uppercase tracking-wide text-mustard">Adicionais</div>
               <ul className="mt-2 divide-y divide-border rounded-xl border border-border">
-                {options.map((o) => {
+                {allAvailableAddons.map((o) => {
                   const q = qtyMap[o.id] ?? 0;
                   return (
                     <li key={o.id} className="flex items-center gap-3 px-4 py-3">
