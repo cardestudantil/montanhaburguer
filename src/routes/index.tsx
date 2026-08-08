@@ -1046,42 +1046,6 @@ function CheckoutModal({
                   })}
                 </div>
 
-                {form.payment_method === "Pix" && (
-                  <div className="mt-3 space-y-3 rounded-xl border border-flame/40 bg-flame/5 p-4">
-                    <div>
-                      <div className="text-xs font-bold uppercase text-flame">Pagamento via Pix</div>
-                      {pixKey ? (
-                        <div className="mt-2 flex flex-wrap items-center gap-2">
-                          <code className="break-all rounded-lg bg-background px-3 py-2 text-sm">{pixKey}</code>
-                          <button
-                            type="button"
-                            onClick={copyPix}
-                            className="rounded-lg border border-flame px-3 py-2 text-xs font-semibold text-flame hover:bg-flame hover:text-white"
-                          >
-                            Copiar
-                          </button>
-                        </div>
-                      ) : (
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          Chave Pix não configurada — pague na entrega ou contate a loja.
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold uppercase text-flame">Comprovante do Pix *</label>
-                      <p className="mt-0.5 text-[11px] text-muted-foreground">
-                        Obrigatório — anexe o print/PDF do pagamento.
-                      </p>
-                      <input
-                        type="file"
-                        accept="image/*,application/pdf"
-                        onChange={(e) => setProofFile(e.target.files?.[0] ?? null)}
-                        className="mt-2 block w-full text-xs text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-flame file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white"
-                      />
-                      {proofFile && <div className="mt-1 truncate text-[11px] text-success">✓ {proofFile.name}</div>}
-                    </div>
-                  </div>
-                )}
 
                 {form.payment_method === "Dinheiro" && (
                   <div className="mt-3 space-y-3 rounded-xl border border-flame/40 bg-flame/5 p-4">
