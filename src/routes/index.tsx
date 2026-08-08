@@ -988,10 +988,12 @@ function CheckoutModal({
                               onClick={() => {
                                 for (let i = 0; i < l.qty; i++) onDec(l.key);
                               }}
-                              className="rounded-full border border-border px-2 py-1 text-[11px] font-semibold text-muted-foreground hover:border-flame hover:text-flame"
+                              className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-border text-destructive hover:bg-destructive/10"
                               aria-label="Remover item"
+                              title="Remover item"
                             >
-                              Remover
+                              <Lock className="hidden" /> {/* just to have an icon-like feel or I'll use text if needed, but Trash2 is better */}
+                              <span className="text-xs">🗑</span>
                             </button>
                           </div>
                         </div>
