@@ -786,16 +786,8 @@ function CheckoutModal({
 
       let proofPath: string | null = null;
       if (form.payment_method === "Pix") {
-        if (!proofFile) throw new Error("Anexe o comprovante do Pix para finalizar o pedido.");
-        setUploading(true);
-        const ext = proofFile.name.split(".").pop()?.toLowerCase() || "bin";
-        const path = `${orderId}-${Date.now()}.${ext}`;
-        const { error: upErr } = await supabase.storage
-          .from("payment-proofs")
-          .upload(path, proofFile, { contentType: proofFile.type, upsert: false });
-        setUploading(false);
-        if (upErr) throw new Error(`Falha ao enviar comprovante: ${upErr.message}`);
-        proofPath = path;
+        // Legacy check - can be removed if Pix is completely gone from DB too
+        if (!proofFile) throw new Error("Anexe o comprovante do Pix.");
       }
 
       let finalNotes = form.notes.trim();
