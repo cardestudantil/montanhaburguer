@@ -384,7 +384,7 @@ function FullPageMsg({ title, body, action }: { title: string; body?: string; ac
         {body && (
           <p className="mt-2 whitespace-pre-wrap text-left text-xs font-mono bg-secondary/50 p-4 rounded-xl overflow-auto max-h-[60vh]">
             {body === "nao funciona" 
-              ? "coloque o scrol para arrastar as categorias"
+              ? "Crie um componente de categorias com rolagem horizontal (swipe) usando o Carousel do shadcn. Ele deve ser responsivo e aceitar toques na tela.\""
               : body}
           </p>
         )}
