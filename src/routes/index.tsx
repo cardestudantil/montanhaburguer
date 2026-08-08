@@ -897,7 +897,7 @@ function CheckoutModal({
       return false;
     if (requireNb && !form.neighborhood_id) return false;
     if (!requireNb && !form.neighborhood_text.trim()) return false;
-    if (form.payment_method === "Pix" && !proofFile) return false;
+    
     return true;
   };
 
