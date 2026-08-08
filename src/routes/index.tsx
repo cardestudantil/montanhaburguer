@@ -910,7 +910,7 @@ function CheckoutModal({
   };
 
   const total = subtotal + effectiveFee;
-  const paymentIcon = form.payment_method === "Pix" ? "⚡" : form.payment_method === "Dinheiro" ? "💵" : "💳";
+  const paymentIcon = form.payment_method.includes("Pix") ? "⚡" : form.payment_method === "Dinheiro" ? "💵" : "💳";
 
   return (
     <div
