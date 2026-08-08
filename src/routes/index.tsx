@@ -224,7 +224,7 @@ function Index() {
       <main className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-8 lg:grid-cols-[1fr_360px]">
         <div>
           <div className="sticky top-16 z-20 -mx-4 mb-6 border-b border-border bg-background/85 px-4 py-3 backdrop-blur-xl">
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide active:cursor-grabbing">
               {activeCats.map((c) => (
                 <CatPill key={c.id} active={currentCat === c.id} onClick={() => setActiveCat(c.id)}>
                   {c.name}
