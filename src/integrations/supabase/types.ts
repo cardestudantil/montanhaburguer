@@ -38,6 +38,44 @@ export type Database = {
         }
         Relationships: []
       }
+      category_addons: {
+        Row: {
+          active: boolean
+          category_id: string
+          created_at: string
+          id: string
+          name: string
+          position: number
+          price: number
+        }
+        Insert: {
+          active?: boolean
+          category_id: string
+          created_at?: string
+          id?: string
+          name: string
+          position?: number
+          price?: number
+        }
+        Update: {
+          active?: boolean
+          category_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          position?: number
+          price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_addons_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       menu_item_addons: {
         Row: {
           active: boolean

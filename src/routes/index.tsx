@@ -5,7 +5,7 @@ import { Lock, WifiOff, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
 
 import { supabase } from "@/integrations/supabase/client";
-import { addonsQuery, categoriesQuery, menuItemsQuery, storeInfoQuery } from "@/lib/queries";
+import { addonsQuery, categoriesQuery, menuItemsQuery, storeInfoQuery, categoryAddonsQuery } from "@/lib/queries";
 import { toast, Toaster } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 import {
@@ -48,6 +48,7 @@ function Index() {
   const cats = useQuery(categoriesQuery);
   const store = useQuery(storeInfoQuery);
   const addons = useQuery(addonsQuery);
+  const catAddons = useQuery(categoryAddonsQuery);
 
   const activeItems = useMemo(() => (items.data ?? []).filter((i) => i.active), [items.data]);
   const activeCats = useMemo(() => (cats.data ?? []).filter((c) => c.active && c.name !== "Promoções"), [cats.data]);
@@ -308,6 +309,7 @@ function Index() {
         <ItemDetailsSheet
           item={detailItem}
           options={addonsByItem[detailItem.id] ?? []}
+          categoryOptions={(catAddons.data ?? []).filter(a => a.category_id === detailItem.category_id && a.active)}
           onClose={() => setDetailItem(null)}
           onConfirm={(picked, notes, qty) => {
             addLine(detailItem.id, picked, notes, qty);
@@ -442,11 +444,13 @@ function ItemCard({
 function ItemDetailsSheet({
   item,
   options,
+  categoryOptions = [],
   onClose,
   onConfirm,
 }: {
   item: Tables<"menu_items">;
   options: Tables<"menu_item_addons">[];
+  categoryOptions?: Tables<"category_addons">[];
   onClose: () => void;
   onConfirm: (picked: SelectedAddon[], notes: string, qty: number) => void;
 }) {
@@ -454,7 +458,13 @@ function ItemDetailsSheet({
   const [notes, setNotes] = useState("");
   const [itemQty, setItemQty] = useState(1);
   const setQty = (id: string, q: number) => setQtyMap((p) => ({ ...p, [id]: Math.max(0, q) }));
-  const selected: SelectedAddon[] = options
+
+  const allAvailableAddons = [
+    ...options.map(o => ({ ...o, type: 'item' })),
+    ...categoryOptions.map(o => ({ ...o, type: 'category' }))
+  ];
+
+  const selected: SelectedAddon[] = allAvailableAddons
     .filter((o) => (qtyMap[o.id] ?? 0) > 0)
     .map((o) => ({ id: o.id, name: o.name, price: Number(o.price), qty: qtyMap[o.id] }));
   const unit = Number(item.price) + addonsTotal(selected);
@@ -499,11 +509,11 @@ function ItemDetailsSheet({
             </div>
           )}
 
-          {options.length > 0 && (
+          {allAvailableAddons.length > 0 && (
             <div className="mt-5">
               <div className="text-xs font-bold uppercase tracking-wide text-mustard">Adicionais</div>
               <ul className="mt-2 divide-y divide-border rounded-xl border border-border">
-                {options.map((o) => {
+                {allAvailableAddons.map((o) => {
                   const q = qtyMap[o.id] ?? 0;
                   return (
                     <li key={o.id} className="flex items-center gap-3 px-4 py-3">
