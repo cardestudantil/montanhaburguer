@@ -1023,7 +1023,6 @@ function CheckoutModal({
                 <h4 className="mb-3 font-display text-lg tracking-wide">Opções de Pagamento</h4>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { value: "Pix", icon: "⚡", label: "Pix no App (Anexar comprovante)" },
                     { value: "Pix na entrega", icon: "📱", label: "Pix na Entrega" },
                     { value: "Cartão na entrega", icon: "💳", label: "Cartão na Entrega" },
                     { value: "Dinheiro", icon: "💵", label: "Dinheiro" },
