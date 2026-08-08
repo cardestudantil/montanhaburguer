@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Trash2 } from "lucide-react";
+import { Trash2, GripVertical } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -384,7 +384,7 @@ function FullPageMsg({ title, body, action }: { title: string; body?: string; ac
         {body && (
           <p className="mt-2 whitespace-pre-wrap text-left text-xs font-mono bg-secondary/50 p-4 rounded-xl overflow-auto max-h-[60vh]">
             {body === "nao funciona" 
-              ? "Crie um componente de categorias com rolagem horizontal (swipe) usando o Carousel do shadcn. Ele deve ser responsivo e aceitar toques na tela.\""
+              ? "nesta area colocar botão para arrastar a posição das categorias"
               : body}
           </p>
         )}
@@ -808,6 +808,7 @@ function CategoriesTab() {
         <table className="w-full text-sm">
           <thead className="bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
             <tr>
+              <th className="w-10 p-3"></th>
               <th className="p-3">Nome</th>
               <th className="p-3">Posição</th>
               <th className="p-3">Ativo</th>
@@ -816,7 +817,10 @@ function CategoriesTab() {
           </thead>
           <tbody>
             {cats.data?.map((c) => (
-              <tr key={c.id} className="border-t border-border">
+              <tr key={c.id} className="border-t border-border group">
+                <td className="p-3 text-muted-foreground/30 group-hover:text-muted-foreground cursor-grab active:cursor-grabbing">
+                  <GripVertical className="h-4 w-4" />
+                </td>
                 <td className="p-3 font-semibold">{c.name}</td>
                 <td className="p-3 text-muted-foreground">{c.position}</td>
                 <td className="p-3">{c.active ? "Sim" : "Não"}</td>
