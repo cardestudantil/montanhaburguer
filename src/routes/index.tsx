@@ -992,7 +992,6 @@ function CheckoutModal({
                               aria-label="Remover item"
                               title="Remover item"
                             >
-                              <Lock className="hidden" /> {/* just to have an icon-like feel or I'll use text if needed, but Trash2 is better */}
                               <span className="text-xs">🗑</span>
                             </button>
                           </div>
