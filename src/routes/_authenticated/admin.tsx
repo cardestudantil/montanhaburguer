@@ -2262,9 +2262,10 @@ function AddonsManager({ itemId }: { itemId: string }) {
               onClick={() => {
                 if (confirm(`Remover "${a.name}"?`)) del.mutate(a.id);
               }}
-              className="ml-auto text-xs font-semibold text-destructive hover:underline"
+              className="ml-auto rounded-lg border border-border p-1.5 text-destructive hover:bg-destructive/10"
+              title="Excluir"
             >
-              Excluir
+              <Trash2 className="h-4 w-4" />
             </button>
           </li>
         ))}
