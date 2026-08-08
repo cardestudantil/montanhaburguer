@@ -1,13 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Lock, WifiOff, Trash2 } from "lucide-react";
+import { Lock, WifiOff, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
 
 import { supabase } from "@/integrations/supabase/client";
 import { addonsQuery, categoriesQuery, menuItemsQuery, storeInfoQuery } from "@/lib/queries";
 import { toast, Toaster } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 
 export const Route = createFileRoute("/")({
   ssr: false,
@@ -224,13 +229,23 @@ function Index() {
       <main className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-8 lg:grid-cols-[1fr_360px]">
         <div>
           <div className="sticky top-16 z-20 -mx-4 mb-6 border-b border-border bg-background/85 px-4 py-3 backdrop-blur-xl">
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide active:cursor-grabbing">
-              {activeCats.map((c) => (
-                <CatPill key={c.id} active={currentCat === c.id} onClick={() => setActiveCat(c.id)}>
-                  {c.name}
-                </CatPill>
-              ))}
-            </div>
+            <Carousel
+              opts={{
+                align: "start",
+                dragFree: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2">
+                {activeCats.map((c) => (
+                  <CarouselItem key={c.id} className="basis-auto pl-2">
+                    <CatPill active={currentCat === c.id} onClick={() => setActiveCat(c.id)}>
+                      {c.name}
+                    </CatPill>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
           </div>
 
           <div className="mb-4 flex items-baseline justify-between">
