@@ -568,13 +568,23 @@ function ItemDetailsSheet({
               </button>
             </div>
           </div>
-          <button
-            onClick={() => onConfirm(selected, notes.trim(), itemQty)}
-            className="flex w-full items-center justify-between gap-3 rounded-xl bg-flame px-4 py-3 font-display text-lg tracking-wide text-white shadow-glow hover:brightness-110"
-          >
-            <span>Adicionar {itemQty > 1 ? `${itemQty}x` : ""} ao carrinho</span>
-            <span className="font-bold">{BRL(total)}</span>
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={onClose}
+              className="grid h-[52px] w-[52px] shrink-0 place-items-center rounded-xl border border-border bg-card text-destructive transition hover:bg-destructive/10"
+              title="Excluir"
+              aria-label="Excluir item"
+            >
+              <Trash2 className="h-6 w-6" />
+            </button>
+            <button
+              onClick={() => onConfirm(selected, notes.trim(), itemQty)}
+              className="flex flex-1 items-center justify-between gap-3 rounded-xl bg-flame px-4 py-3 font-display text-lg tracking-wide text-white shadow-glow hover:brightness-110"
+            >
+              <span>Adicionar {itemQty > 1 ? `${itemQty}x` : ""} ao carrinho</span>
+              <span className="font-bold">{BRL(total)}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
