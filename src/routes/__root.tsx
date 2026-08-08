@@ -7,7 +7,8 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, type ReactNode, useState } from "react";
+import { WifiOff } from "lucide-react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -161,6 +162,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
     const loader = document.getElementById("initial-loader");
@@ -168,13 +170,44 @@ function RootComponent() {
       loader.style.opacity = "0";
       setTimeout(() => loader.remove(), 400);
     }
+
+    if (typeof window !== "undefined") {
+      setIsOnline(window.navigator.onLine);
+      const handleOnline = () => setIsOnline(true);
+      const handleOffline = () => setIsOnline(false);
+      window.addEventListener("online", handleOnline);
+      window.addEventListener("offline", handleOffline);
+      return () => {
+        window.removeEventListener("online", handleOnline);
+        window.removeEventListener("offline", handleOffline);
+      };
+    }
   }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeApplier />
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+      {!isOnline && (
+        <div className="fixed top-0 left-0 right-0 z-[9999] animate-in fade-in slide-in-from-top duration-300">
+          <div className="flex items-center justify-center gap-2 bg-red-600 px-4 py-2 text-center text-xs font-bold text-white shadow-lg">
+            <WifiOff className="h-3 w-3" />
+            <span>Sem conexão com a internet. Suas alterações serão salvas assim que a rede voltar</span>
+          </div>
+        </div>
+      )}
       <Outlet />
+      {!isOnline && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          button[type="submit"], 
+          button:has(svg.lucide-trash2),
+          button:has(svg.lucide-save),
+          .btn-critical { 
+            pointer-events: none !important; 
+            opacity: 0.6 !important; 
+            cursor: not-allowed !important;
+          }
+        `}} />
+      )}
     </QueryClientProvider>
   );
 }
