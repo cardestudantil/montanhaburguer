@@ -48,6 +48,7 @@ function Index() {
   const cats = useQuery(categoriesQuery);
   const store = useQuery(storeInfoQuery);
   const addons = useQuery(addonsQuery);
+  const catAddons = useQuery(categoryAddonsQuery);
 
   const activeItems = useMemo(() => (items.data ?? []).filter((i) => i.active), [items.data]);
   const activeCats = useMemo(() => (cats.data ?? []).filter((c) => c.active && c.name !== "Promoções"), [cats.data]);
