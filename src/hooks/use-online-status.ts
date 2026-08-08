@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Wifi, WifiOff } from "lucide-react";
 import { toast } from "sonner";
 
 export function useOnlineStatus() {
@@ -13,7 +12,7 @@ export function useOnlineStatus() {
       toast.success("Conexão restabelecida!", {
         id: "online-status",
         duration: 3000,
-        icon: <Wifi className="h-4 w-4" />,
+        icon: null, // React icons in non-component files need care in this environment, using null for now
       });
     };
 
@@ -22,7 +21,7 @@ export function useOnlineStatus() {
       toast.error("Sem conexão com a internet. Suas alterações serão salvas assim que a rede voltar", {
         id: "online-status",
         duration: Infinity,
-        icon: <WifiOff className="h-4 w-4" />,
+        icon: null,
       });
     };
 
