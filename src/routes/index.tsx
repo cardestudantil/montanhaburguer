@@ -910,7 +910,7 @@ function CheckoutModal({
   };
 
   const total = subtotal + effectiveFee;
-  const paymentIcon = form.payment_method === "Pix" ? "⚡" : form.payment_method === "Dinheiro" ? "💵" : "💳";
+  const paymentIcon = form.payment_method.includes("Pix") ? "⚡" : form.payment_method === "Dinheiro" ? "💵" : "💳";
 
   return (
     <div
@@ -1021,10 +1021,11 @@ function CheckoutModal({
               {/* 3. Forma de pagamento */}
               <section className="rounded-2xl border border-border bg-background/50 p-4">
                 <h4 className="mb-3 font-display text-lg tracking-wide">Opções de Pagamento</h4>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {[
-                    { value: "Pix", icon: "⚡", label: "Pix" },
-                    { value: "Cartão na entrega", icon: "💳", label: "Cartão" },
+                    { value: "Pix", icon: "⚡", label: "Pix no App (Anexar comprovante)" },
+                    { value: "Pix na entrega", icon: "📱", label: "Pix na Entrega" },
+                    { value: "Cartão na entrega", icon: "💳", label: "Cartão na Entrega" },
                     { value: "Dinheiro", icon: "💵", label: "Dinheiro" },
                   ].map((opt) => {
                     const selected = form.payment_method === opt.value;
