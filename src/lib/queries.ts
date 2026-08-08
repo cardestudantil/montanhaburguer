@@ -23,6 +23,7 @@ export const categoryAddonsQuery = queryOptions({
     if (error) throw error;
     return data ?? [];
   },
+});
 
 export const menuItemsQuery = queryOptions({
   queryKey: ["menu_items"],
