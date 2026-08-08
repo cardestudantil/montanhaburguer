@@ -110,12 +110,12 @@ export function AdminPage() {
               <div className="text-[11px] text-muted-foreground">{storeName}</div>
             </div>
           </Link>
-          <nav className="ml-6 hidden gap-1 md:flex">
+          <nav className="ml-6 hidden gap-1 md:flex overflow-x-auto scrollbar-hide active:cursor-grabbing">
             {tabs.map(([k, l]) => (
               <button
                 key={k}
                 onClick={() => setTab(k)}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
+                className={`whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition ${
                   activeTab === k ? "bg-flame text-white" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
