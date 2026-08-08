@@ -761,7 +761,7 @@ function CheckoutModal({
     neighborhood_id: "",
     neighborhood_text: "",
     notes: "",
-    payment_method: "Pix",
+    payment_method: "Pix na entrega",
   });
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
