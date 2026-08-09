@@ -401,7 +401,7 @@ function FullPageMsg({ title, body, action }: { title: string; body?: string; ac
         {body && (
           <p className="mt-2 whitespace-pre-wrap text-left text-xs font-mono bg-secondary/50 p-4 rounded-xl overflow-auto max-h-[60vh]">
             {body === "nao funciona" 
-              ? "COLOCAR OPÇÃO DE MULTIPLAS CATEGORIAS"
+              ? "Altere o campo de 'CATEGORIA' do meu formulário para aceitar seleção múltipla. Quero que ele funcione como um campo de tags/badges ou um dropdown com checkboxes, permitindo selecionar várias categorias (ex: Lanche, Porção) para o mesmo adicional. Se eu digitar uma categoria que não existe dentro desse campo e apertar Enter, ela deve ser criada e selecionada automaticamente na hora."
               : body}
           </p>
         )}
