@@ -1074,21 +1074,87 @@ function AddonQuickForm() {
             placeholder="0,00"
           />
         </Field>
-        <Field label="Categoria">
-          <input
-            required
-            list="admin-cat-list"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className={inputCls}
-            placeholder="Ex: Lanches"
-          />
-          <datalist id="admin-cat-list">
-            {cats?.map((c) => (
-              <option key={c.id} value={c.name} />
-            ))}
-          </datalist>
+        <Field label="Categorias">
+          <div className="relative">
+            <div className="flex min-h-[42px] flex-wrap items-center gap-1 rounded-xl border border-border bg-background px-2 py-1">
+              {selectedCats.map((c) => (
+                <span
+                  key={c}
+                  className="flex items-center gap-1 rounded-full bg-flame/10 px-2 py-0.5 text-xs font-semibold text-flame"
+                >
+                  {c}
+                  <button
+                    type="button"
+                    onClick={() => toggleCat(c)}
+                    className="text-flame/70 hover:text-flame"
+                    aria-label={`Remover ${c}`}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              <input
+                value={catInput}
+                onChange={(e) => setCatInput(e.target.value)}
+                onFocus={() => setOpenCats(true)}
+                onBlur={() => setTimeout(() => setOpenCats(false), 150)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addTypedCat();
+                  } else if (e.key === "Backspace" && !catInput && selectedCats.length) {
+                    setSelectedCats((prev) => prev.slice(0, -1));
+                  }
+                }}
+                className="min-w-[120px] flex-1 bg-transparent px-1 py-1 text-sm outline-none"
+                placeholder={selectedCats.length ? "" : "Ex: Lanche, Porção"}
+              />
+            </div>
+            {openCats && (
+              <div className="absolute z-30 mt-1 max-h-48 w-full overflow-auto rounded-xl border border-border bg-card p-1 shadow-lg">
+                {(cats ?? [])
+                  .filter((c) => c.name.toLowerCase().includes(catInput.trim().toLowerCase()))
+                  .map((c) => {
+                    const checked = selectedCats.some(
+                      (s) => s.toLowerCase() === c.name.toLowerCase(),
+                    );
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => toggleCat(c.name)}
+                        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-muted"
+                      >
+                        <span
+                          className={`flex h-4 w-4 items-center justify-center rounded border text-[10px] ${
+                            checked ? "border-flame bg-flame text-white" : "border-border"
+                          }`}
+                        >
+                          {checked ? "✓" : ""}
+                        </span>
+                        {c.name}
+                      </button>
+                    );
+                  })}
+                {catInput.trim() &&
+                  !cats?.some(
+                    (c) => c.name.trim().toLowerCase() === catInput.trim().toLowerCase(),
+                  ) && (
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={addTypedCat}
+                      className="w-full rounded-lg px-2 py-1.5 text-left text-sm text-flame hover:bg-muted"
+                    >
+                      Criar "{catInput.trim()}"
+                    </button>
+                  )}
+              </div>
+            )}
+          </div>
         </Field>
+
         <button
           type="submit"
           disabled={save.isPending}
