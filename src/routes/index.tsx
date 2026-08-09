@@ -204,7 +204,7 @@ function Index() {
                     store.data.tagline
                   ) : (
                     <>
-                      Hambúrgueres que <span className="text-flame">incendeiam</span> a fome.
+                      aplicativo teste
                     </>
                   )}
                 </h1>
