@@ -963,45 +963,71 @@ function AddonQuickForm() {
   const { data: allAddons } = useQuery(categoryAddonsQuery);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
+  const [selectedCats, setSelectedCats] = useState<string[]>([]);
+  const [catInput, setCatInput] = useState("");
+  const [openCats, setOpenCats] = useState(false);
+
+  const toggleCat = (n: string) =>
+    setSelectedCats((prev) =>
+      prev.some((c) => c.toLowerCase() === n.toLowerCase())
+        ? prev.filter((c) => c.toLowerCase() !== n.toLowerCase())
+        : [...prev, n],
+    );
+
+  const addTypedCat = () => {
+    const v = catInput.trim();
+    if (!v) return;
+    const existing = cats?.find((c) => c.name.trim().toLowerCase() === v.toLowerCase());
+    const label = existing?.name ?? v;
+    if (!selectedCats.some((c) => c.toLowerCase() === label.toLowerCase())) {
+      setSelectedCats((prev) => [...prev, label]);
+    }
+    setCatInput("");
+  };
 
   const save = useMutation({
     mutationFn: async () => {
-      const catName = category.trim();
       const addonName = name.trim();
-      if (!catName || !addonName) throw new Error("Preencha nome e categoria");
+      if (!addonName || selectedCats.length === 0)
+        throw new Error("Preencha nome e ao menos uma categoria");
 
-      let cat = cats?.find((c) => c.name.trim().toLowerCase() === catName.toLowerCase());
-      if (!cat) {
-        const { data, error } = await supabase
-          .from("categories")
-          .insert({ name: catName, position: (cats?.length ?? 0) + 1, active: true })
-          .select()
-          .single();
+      let localCats = cats ? [...cats] : [];
+      for (const catName of selectedCats) {
+        let cat = localCats.find((c) => c.name.trim().toLowerCase() === catName.toLowerCase());
+        if (!cat) {
+          const { data, error } = await supabase
+            .from("categories")
+            .insert({ name: catName, position: localCats.length + 1, active: true })
+            .select()
+            .single();
+          if (error) throw error;
+          cat = data;
+          localCats = [...localCats, data];
+        }
+
+        const count = allAddons?.filter((a) => a.category_id === cat!.id).length ?? 0;
+        const { error } = await supabase.from("category_addons").insert({
+          category_id: cat!.id,
+          name: addonName,
+          price: Number(price || 0),
+          active: true,
+          position: count + 1,
+        });
         if (error) throw error;
-        cat = data;
       }
-
-      const count = allAddons?.filter((a) => a.category_id === cat!.id).length ?? 0;
-      const { error } = await supabase.from("category_addons").insert({
-        category_id: cat!.id,
-        name: addonName,
-        price: Number(price || 0),
-        active: true,
-        position: count + 1,
-      });
-      if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["category_addons"] });
       qc.invalidateQueries({ queryKey: ["categories"] });
       setName("");
       setPrice("");
-      setCategory("");
+      setSelectedCats([]);
+      setCatInput("");
       toast.success("Adicional salvo");
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao salvar"),
   });
+
 
   const del = useMutation({
     mutationFn: async (id: string) => {
