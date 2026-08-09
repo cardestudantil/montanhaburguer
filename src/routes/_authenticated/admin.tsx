@@ -401,7 +401,7 @@ function FullPageMsg({ title, body, action }: { title: string; body?: string; ac
         {body && (
           <p className="mt-2 whitespace-pre-wrap text-left text-xs font-mono bg-secondary/50 p-4 rounded-xl overflow-auto max-h-[60vh]">
             {body === "nao funciona" 
-              ? "quero criar uma area para colocar adicionais separado por categorias"
+              ? "Crie uma tela de administração para o lojista gerenciar adicionais. Preciso de um formulário para criar uma categoria de adicionais. Ao lado, preciso de outro formulário onde digito o nome do adicional, o preço dele e um campo select (caixa de seleção) que pergunte em qual categoria criada quero acrescentar esse adicional. Abaixo dos formulários, mostre uma lista organizada mostrando as categorias e os respectivos adicionais salvos dentro de cada uma."
               : body}
           </p>
         )}
