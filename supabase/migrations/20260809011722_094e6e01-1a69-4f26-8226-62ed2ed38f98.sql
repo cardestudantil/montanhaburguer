@@ -1,0 +1,1 @@
+UPDATE public.store_info SET tagline = 'aplicativo teste' WHERE tagline = 'O melhor lanche da cidade';
