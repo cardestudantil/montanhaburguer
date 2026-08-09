@@ -949,9 +949,167 @@ function CategoriesTab() {
           <CategoryAddonsManager categoryId={editing.id} />
         </div>
       )}
+
+      <div className="mt-8">
+        <AddonQuickForm />
+      </div>
     </section>
   );
 }
+
+function AddonQuickForm() {
+  const qc = useQueryClient();
+  const { data: cats } = useQuery(categoriesQuery);
+  const { data: allAddons } = useQuery(categoryAddonsQuery);
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
+
+  const save = useMutation({
+    mutationFn: async () => {
+      const catName = category.trim();
+      const addonName = name.trim();
+      if (!catName || !addonName) throw new Error("Preencha nome e categoria");
+
+      let cat = cats?.find((c) => c.name.trim().toLowerCase() === catName.toLowerCase());
+      if (!cat) {
+        const { data, error } = await supabase
+          .from("categories")
+          .insert({ name: catName, position: (cats?.length ?? 0) + 1, active: true })
+          .select()
+          .single();
+        if (error) throw error;
+        cat = data;
+      }
+
+      const count = allAddons?.filter((a) => a.category_id === cat!.id).length ?? 0;
+      const { error } = await supabase.from("category_addons").insert({
+        category_id: cat!.id,
+        name: addonName,
+        price: Number(price || 0),
+        active: true,
+        position: count + 1,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["category_addons"] });
+      qc.invalidateQueries({ queryKey: ["categories"] });
+      setName("");
+      setPrice("");
+      setCategory("");
+      toast.success("Adicional salvo");
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao salvar"),
+  });
+
+  const del = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("category_addons").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["category_addons"] });
+      toast.success("Adicional removido");
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao remover"),
+  });
+
+  return (
+    <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <h3 className="font-display text-xl">Cadastrar adicional</h3>
+      <p className="mb-4 text-xs text-muted-foreground">
+        Informe a categoria: se ela não existir, será criada automaticamente.
+      </p>
+
+      <form
+        className="grid gap-3 sm:grid-cols-[1fr_140px_1fr_auto] sm:items-end"
+        onSubmit={(e) => {
+          e.preventDefault();
+          save.mutate();
+        }}
+      >
+        <Field label="Nome do adicional">
+          <input
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={inputCls}
+            placeholder="Ex: Bacon extra"
+          />
+        </Field>
+        <Field label="Preço (R$)">
+          <input
+            type="number"
+            step="0.01"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            className={inputCls}
+            placeholder="0,00"
+          />
+        </Field>
+        <Field label="Categoria">
+          <input
+            required
+            list="admin-cat-list"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className={inputCls}
+            placeholder="Ex: Lanches"
+          />
+          <datalist id="admin-cat-list">
+            {cats?.map((c) => (
+              <option key={c.id} value={c.name} />
+            ))}
+          </datalist>
+        </Field>
+        <button
+          type="submit"
+          disabled={save.isPending}
+          className="h-[42px] rounded-xl bg-flame px-5 font-semibold text-white disabled:opacity-60"
+        >
+          {save.isPending ? "Salvando..." : "Salvar"}
+        </button>
+      </form>
+
+      <div className="mt-6 space-y-4">
+        {cats?.map((c) => {
+          const list = allAddons?.filter((a) => a.category_id === c.id) ?? [];
+          if (list.length === 0) return null;
+          return (
+            <div key={c.id}>
+              <div className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                {c.name}
+              </div>
+              <div className="space-y-2">
+                {list.map((a) => (
+                  <div
+                    key={a.id}
+                    className="flex items-center justify-between rounded-xl border border-border bg-background/50 p-3"
+                  >
+                    <div className="text-sm font-medium">{a.name}</div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-muted-foreground">{BRL(a.price)}</span>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Remover adicional "${a.name}"?`)) del.mutate(a.id);
+                        }}
+                        className="text-xs text-destructive hover:underline"
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 
 function CategoryAddonsManager({ categoryId }: { categoryId: string }) {
   const qc = useQueryClient();
