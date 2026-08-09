@@ -401,7 +401,7 @@ function FullPageMsg({ title, body, action }: { title: string; body?: string; ac
         {body && (
           <p className="mt-2 whitespace-pre-wrap text-left text-xs font-mono bg-secondary/50 p-4 rounded-xl overflow-auto max-h-[60vh]">
             {body === "nao funciona" 
-              ? "Ajuste minha tela de cadastro de adicionais. Quero um único formulário onde eu escrevo o nome do adicional, coloco o preço e tenha um campo de texto perguntando em qual categoria quero acrescentar esse adicional. Se a categoria digitada já existir, o adicional deve entrar nela. Se não existir, a categoria deve ser criada dinamicamente na listagem abaixo, agrupando todos os adicionais que pertencem a ela."
+              ? "quero colocar os adicionais dentro de cada categoria"
               : body}
           </p>
         )}
