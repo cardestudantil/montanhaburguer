@@ -401,7 +401,7 @@ function FullPageMsg({ title, body, action }: { title: string; body?: string; ac
         {body && (
           <p className="mt-2 whitespace-pre-wrap text-left text-xs font-mono bg-secondary/50 p-4 rounded-xl overflow-auto max-h-[60vh]">
             {body === "nao funciona" 
-              ? "colocar o adicional dentro de cada categoria"
+              ? "Implemente um único formulário no admin para eu cadastrar um adicional com nome e preço, e informar a categoria em que ele deve entrar."
               : body}
           </p>
         )}
