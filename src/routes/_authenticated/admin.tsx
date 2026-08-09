@@ -401,7 +401,7 @@ function FullPageMsg({ title, body, action }: { title: string; body?: string; ac
         {body && (
           <p className="mt-2 whitespace-pre-wrap text-left text-xs font-mono bg-secondary/50 p-4 rounded-xl overflow-auto max-h-[60vh]">
             {body === "nao funciona" 
-              ? "quero colocar os adicionais dentro de cada categoria"
+              ? "colocar o adicional dentro de cada categoria"
               : body}
           </p>
         )}
