@@ -716,7 +716,7 @@ function ItemsTab() {
               <AddonsManager itemId={editing.id} />
             ) : (
               <div className="rounded-xl border border-dashed border-border bg-secondary/30 p-3 text-xs text-muted-foreground">
-                💡 Salve o item primeiro para cadastrar os adicionais.
+                💡 Salve o item primeiro para cadastrar os [anexo].
               </div>
             )}
             <div className="flex justify-end gap-2 pt-2">
@@ -2794,7 +2794,7 @@ function AddonsManager({ itemId }: { itemId: string }) {
   return (
     <div className="rounded-xl border border-border bg-secondary/20 p-3">
       <div className="mb-2 flex items-center justify-between">
-        <div className="text-xs font-bold uppercase text-flame">Adicionais</div>
+        <div className="text-xs font-bold uppercase text-flame">[anexo]</div>
         <span className="text-[11px] text-muted-foreground">{list.length} item(s)</span>
       </div>
 
@@ -2837,14 +2837,14 @@ function AddonsManager({ itemId }: { itemId: string }) {
         ))}
         {list.length === 0 && (
           <li className="rounded-lg border border-dashed border-border p-3 text-center text-xs text-muted-foreground">
-            Nenhum adicional ainda.
+            Nenhum [anexo] ainda.
           </li>
         )}
       </ul>
 
       <div ref={formRef} className="flex flex-wrap items-end gap-2">
         <div className="min-w-0 flex-1">
-          <span className="mb-1 block text-[10px] font-semibold uppercase text-muted-foreground">Novo adicional</span>
+          <span className="mb-1 block text-[10px] font-semibold uppercase text-muted-foreground">Novo [anexo]</span>
           <input
             value={draft.name}
             onChange={(e) => setDraft({ ...draft, name: e.target.value })}
@@ -2869,7 +2869,7 @@ function AddonsManager({ itemId }: { itemId: string }) {
           disabled={add.isPending}
           className="rounded-lg bg-flame px-3 py-2 text-xs font-bold text-white hover:brightness-110 disabled:opacity-50"
         >
-          + Adicionar
+          + [anexo]
         </button>
       </div>
     </div>
