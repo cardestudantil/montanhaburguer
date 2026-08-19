@@ -1023,7 +1023,7 @@ function AddonQuickForm() {
       setPrice("");
       setSelectedCats([]);
       setCatInput("");
-      toast.success("Adicional salvo");
+      toast.success("[anexo] salvo");
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao salvar"),
   });
@@ -1036,14 +1036,14 @@ function AddonQuickForm() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["category_addons"] });
-      toast.success("Adicional removido");
+      toast.success("[anexo] removido");
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao remover"),
   });
 
   return (
     <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-      <h3 className="font-display text-xl">Cadastrar adicional</h3>
+      <h3 className="font-display text-xl">Cadastrar [anexo]</h3>
       <p className="mb-4 text-xs text-muted-foreground">
         Informe a categoria: se ela não existir, será criada automaticamente.
       </p>
@@ -1055,7 +1055,7 @@ function AddonQuickForm() {
           save.mutate();
         }}
       >
-        <Field label="Nome do adicional">
+        <Field label="Nome do [anexo]">
           <input
             required
             value={name}
@@ -1147,7 +1147,7 @@ function AddonQuickForm() {
                       onClick={addTypedCat}
                       className="w-full rounded-lg px-2 py-1.5 text-left text-sm text-flame hover:bg-muted"
                     >
-                      Criar "{catInput.trim()}"
+                      Criar "{catInput.trim()}" [anexo]
                     </button>
                   )}
               </div>
@@ -1184,7 +1184,7 @@ function AddonQuickForm() {
                       <span className="text-xs text-muted-foreground">{BRL(a.price)}</span>
                       <button
                         onClick={() => {
-                          if (confirm(`Remover adicional "${a.name}"?`)) del.mutate(a.id);
+                          if (confirm(`Remover [anexo] "${a.name}"?`)) del.mutate(a.id);
                         }}
                         className="text-xs text-destructive hover:underline"
                       >
@@ -1229,7 +1229,7 @@ function CategoryAddonsManager({ categoryId }: { categoryId: string }) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["category_addons"] });
       setEditing(null);
-      toast.success("Adicional salvo");
+      toast.success("[anexo] salvo");
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao salvar"),
   });
@@ -1241,7 +1241,7 @@ function CategoryAddonsManager({ categoryId }: { categoryId: string }) {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["category_addons"] });
-      toast.success("Adicional removido");
+      toast.success("[anexo] removido");
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao remover"),
   });
@@ -1250,16 +1250,16 @@ function CategoryAddonsManager({ categoryId }: { categoryId: string }) {
     <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h3 className="font-display text-xl">Adicionais por Categoria</h3>
+          <h3 className="font-display text-xl">[anexo] por Categoria</h3>
           <p className="text-xs text-muted-foreground">
-            Estes adicionais aparecerão em TODOS os itens desta categoria.
+            Estes [anexo] aparecerão em TODOS os itens desta categoria.
           </p>
         </div>
         <button
           onClick={() => setEditing({ active: true, position: addons.length + 1 })}
           className="flex items-center gap-1 rounded-lg bg-secondary px-3 py-1.5 text-xs font-semibold hover:bg-secondary/80"
         >
-          <Plus className="h-3 w-3" /> Novo adicional
+          <Plus className="h-3 w-3" /> Novo [anexo]
         </button>
       </div>
 
@@ -1279,7 +1279,7 @@ function CategoryAddonsManager({ categoryId }: { categoryId: string }) {
               </button>
               <button
                 onClick={() => {
-                  if (confirm(`Remover adicional "${a.name}"?`)) del.mutate(a.id);
+                  if (confirm(`Remover [anexo] "${a.name}"?`)) del.mutate(a.id);
                 }}
                 className="text-xs text-destructive hover:underline"
               >
@@ -1290,7 +1290,7 @@ function CategoryAddonsManager({ categoryId }: { categoryId: string }) {
         ))}
         {addons.length === 0 && (
           <div className="py-4 text-center text-xs text-muted-foreground">
-            Nenhum adicional vinculado a esta categoria.
+            Nenhum [anexo] vinculado a esta categoria.
           </div>
         )}
       </div>
@@ -1298,7 +1298,7 @@ function CategoryAddonsManager({ categoryId }: { categoryId: string }) {
       {editing && (
         <Modal
           onClose={() => setEditing(null)}
-          title={editing.id ? "Editar adicional" : "Novo adicional da categoria"}
+          title={editing.id ? "Editar [anexo]" : "Novo [anexo] da categoria"}
         >
           <form
             className="space-y-3"
