@@ -423,7 +423,7 @@ function ItemCard({
               <div className="text-xs text-muted-foreground line-through">{BRL(Number(item.old_price))}</div>
             )}
             {hasAddons && (
-              <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-mustard">+ Adicionais</div>
+              <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-mustard">+ [anexo]</div>
             )}
           </div>
           <button
@@ -511,7 +511,7 @@ function ItemDetailsSheet({
 
           {allAvailableAddons.length > 0 && (
             <div className="mt-5">
-              <div className="text-xs font-bold uppercase tracking-wide text-mustard">Adicionais</div>
+              <div className="text-xs font-bold uppercase tracking-wide text-mustard">[anexo]</div>
               <ul className="mt-2 divide-y divide-border rounded-xl border border-border">
                 {allAvailableAddons.map((o) => {
                   const q = qtyMap[o.id] ?? 0;
