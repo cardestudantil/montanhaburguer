@@ -103,7 +103,9 @@ function Index() {
 
   const isOnline = typeof window !== "undefined" ? window.navigator.onLine : true;
 
-  if (store.isLoading && !store.data && isOnline && !store.isError) {
+  const isLoadingInitial = store.isLoading && !store.data && isOnline && !store.isError;
+  
+  if (isLoadingInitial) {
     return (
       <div className="grid min-h-screen place-items-center bg-background text-foreground">
         {!isOnline && (
