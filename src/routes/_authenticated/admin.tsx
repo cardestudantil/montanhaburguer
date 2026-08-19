@@ -42,7 +42,10 @@ export function AdminPage() {
   const { user, isStaff, loading } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("items");
-  const { data: storeInfo } = useQuery(storeInfoQuery);
+  const { data: storeInfo, isLoading: storeLoading } = useQuery({
+    ...storeInfoQuery,
+    retry: false,
+  });
   const [storeName, setStoreName] = useState<string>("Burguer");
   useEffect(() => {
     try {
@@ -66,7 +69,7 @@ export function AdminPage() {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  if (loading) return <FullPageMsg title="Carregando..." />;
+  if (loading && !user) return <FullPageMsg title="Carregando..." />;
   if (!user)
     return (
       <FullPageMsg
