@@ -1971,6 +1971,18 @@ function useNewOrderSound(orders: Tables<"orders">[] | undefined, enabled: boole
     return loadingRef.current;
   };
 
+  const elRef = useRef<HTMLAudioElement | null>(null);
+
+  const getEl = () => {
+    if (!elRef.current) {
+      const el = new Audio(notifySoundAsset.url);
+      el.loop = true;
+      el.preload = "auto";
+      elRef.current = el;
+    }
+    return elRef.current;
+  };
+
   const stopBeep = () => {
     const src = activeSourceRef.current;
     if (src) {
@@ -1986,17 +1998,39 @@ function useNewOrderSound(orders: Tables<"orders">[] | undefined, enabled: boole
       }
       activeSourceRef.current = null;
     }
+    if (elRef.current) {
+      try {
+        elRef.current.pause();
+        elRef.current.currentTime = 0;
+      } catch {
+        // ignore
+      }
+    }
     setIsPlaying(false);
+  };
+
+  const playFallback = async () => {
+    try {
+      const el = getEl();
+      el.volume = Math.min(1, Math.max(0, volumeRef.current));
+      el.currentTime = 0;
+      await el.play();
+      setIsPlaying(true);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   const playSequence = async () => {
     const ctx = await ensureCtx();
-    if (!ctx || ctx.state !== "running") return false;
+    if (!ctx || ctx.state !== "running") return playFallback();
     const buffer = await loadBuffer(ctx);
-    if (!buffer) return false;
+    if (!buffer) return playFallback();
 
     // Stop any previous playback so we don't stack loops
     stopBeep();
+
 
     // Master chain: gain -> soft-clip -> limiter -> post gain -> destination
     const master = ctx.createGain();
