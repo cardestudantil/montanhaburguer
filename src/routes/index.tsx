@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router"; // sim
+import { createFileRoute, Link } from "@tanstack/react-router"; // Ative Supabase para este projeto.
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { Lock, WifiOff, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
